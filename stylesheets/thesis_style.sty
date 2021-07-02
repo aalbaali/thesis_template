@@ -400,6 +400,26 @@
 
 % <--------------------------------------- Called in decar-lie.sty package
 
+% Called in decar-post.sty package ---------------------------------------->
+\usepackage{decar-post}
+% \makeatletter
+% \usepackage[
+%   colorlinks,
+%   citecolor=black,
+%   linkcolor=black,
+%   linktocpage=true,
+%   linktoc=all]
+%     {hyperref}
+% \usepackage{float}
+% \usepackage{algorithm}
+% \usepackage{bookmark}	 % Create the bookmarks in the page automatically
+% \usepackage{cleveref}
+
+% \crefformat{equation}{(#2#1#3)}  % Proper equation format for cleveref
+% \Crefformat{equation}{Equation~(#2#1#3)}
+% \makeatother
+% <--------------------------------------- Called in decar-post.sty package
+
 
 \usepackage[french,english]{babel}
 \usepackage[utf8]{inputenc}
@@ -424,21 +444,13 @@
 %\usepackage{appendix}
 % \usepackage{hyperref} \hypersetup{debug=true, backref=true, letterpaper=true, colorlinks=true, bookmarks, linkcolor=blue, citecolor=blue,urlcolor=black}
 % \usepackage[colorlinks,citecolor=blue,linkcolor=blue, linktocpage=true]{hyperref}
-\usepackage[
-  colorlinks,
-  citecolor=black,
-  linkcolor=black,
-  linktocpage=true,
-  linktoc=all]
-    {hyperref}
+    
 % \usepackage[pdftex,colorlinks]{hyperref}
-\usepackage{bookmark}	 % Create the bookmarks in the page automatically
-\usepackage{float}
+
 \usepackage{booktabs}
 \usepackage{adjustbox}
 % Fix for underrightarrow in a caption
 \usepackage{balance}
-\usepackage{algorithm}
 \usepackage{marginnote}
 
 % landsape
@@ -632,3 +644,4 @@ $}}}}}
 
 % \theoremstyle{remark}
 % \newtheorem{remark}[theorem]{Remark}
+
