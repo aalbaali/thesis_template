@@ -1,0 +1,477 @@
+
+For many robotics applications, the extended Kalman filter (EKF) is the state estimation algorithm of choice. Unlike its linear counterpart, the EKF does not have any global convergence properties. The EKF, when treated as an observer, has been shown to have locally convergent error dynamics when the initial error in the state estimate is sufficiently  small \cite{Song1992,Krener2003}. This is due to the fact that, in general, the Jacobians used in an EKF depend on the states. As these states are not known, only the best estimate can be used. When this estimate is far from the true state, the Jacobians can be inaccurate, leading to poor filter performance, and, in some cases, divergence. However, in practice, the EKF is often sufficient, as demonstrated by its pervasiveness in many state estimation applications. 
+
+In recent years, Barrau and Bonnabel have introduced the invariant extended Kalman filter (IEKF) \cite{Barrau2017}, building on the theory of symmetry-preserving observers on matrix Lie groups \cite{Bonnabel2008,Bonnabel2009}. The IEKF exploits the fact that, in robotics, the estimated states are not elements of a linear vector space, but are rather elements of a matrix Lie group. For a certain class of systems, known as group-affine systems, Barrau and Bonnabel show that a careful definition of the error leads to state-independent error dynamics \cite{Barrau2017}. This implies the process model Jacobian is state independent. Furthermore, for specific measurement models, the measurement model Jacobian is also state-independent. Using the fact that the Jacobians are state-independent, it can be shown that the IEKF is a locally asymptotically stable observer, no matter the trajectory.
+
+In this chapter, the IEKF theory is presented, along with relevant proofs. The continuous-time \cite{Barrau2017} and discrete-time \cite{Barrau2018} variants are shown.  For each, both the left-invariant extended Kalman filter (LIEKF) and right-invariant extended Kalman filter (RIEKF) are presented.
+
+\section{Invariant Filtering in Continuous Time}
+\label{sec:IEKF_c}
+
+This section is a summary of the results from \cite{Barrau2017}. In addition ,the proofs for a right-invariant error definition are included here. Let $\mathcal{G} \subset \mathbb{R}^{n \times n}$ be a matrix Lie group. Denote its matrix Lie algebra $\mathfrak{g} \subset \mathbb{R}^{d \times d}$. Suppose the evolution of the system can be described by the differential equation
+\beq
+	\mbfdot{X}(t) = \mbf{F}(\mbf{X}(t),\mbf{u}(t)) + \mbf{X}(t) \mbf{W}(t), \label{eq:f}
+\eeq
+where $\mbf{u}(t) \in \mathbb{R}^{n_u}$ is an input variable, $\mbf{X}(t) \in \mathcal{G}$ is the state, and $\mbf{W}(t) \in \mathfrak{g}$ is band-limited white noise. The noise in $\mathbb{R}^d$ is $\mbf{W}(t)^{\vee} = \mbf{w}(t)$. The argument of time will be suppressed throughout for brevity. When discretized, the noise at time $t_k$ is $\mbf{w}_k \sim \mathcal{N} \left(\mbf{0},\mbf{Q}_k\right)$.  The function $\mbf{F}\left(\mbf{X},\mbf{u}\right)$ is said to be group affine if it satisfies
+\beq
+	\mbf{F}\left(\mbf{X}_1 \mbf{X}_2, \mbf{u}\right) =\mbf{F}\left(\mbf{X}_1, \mbf{u}\right) \mbf{X}_2 + \mbf{X}_1\mbf{F}\left(\mbf{X}_2, \mbf{u}\right) - \mbf{X}_1\mbf{F}\left(\mbf{1}, \mbf{u}\right) \mbf{X}_2, \label{eq:inv_rel} 
+\eeq
+where $\mbf{X}_1$, $\mbf{X}_2 \in \mathcal{G}$. Consider the true state $\mbf{X}$ and the estimated state $\mbfhat{X}$. The left and right-invariant errors are
+\begin{align}
+	\mbfdel{X}^\mathrm{L} & = \mbf{X}^{-1} \mbfhat{X}, \label{eq:err_L} \\
+	\mbfdel{X}^\mathrm{R} & = \mbfhat{X} \mbf{X}^{-1}, \label{eq:err_R}
+\end{align}
+respectively. The errors are said to have state-independent propagation if their derivative with respect to time satisfies the differential equation
+\beq
+	\delta \mbfdot{X} =\mbf{G}\left(\mbfdel{X}, \mbf{u}\right) \label{eq:traj_ind}.
+\eeq
+\begin{theorem}
+	\label{thm:inv_c}
+	For \eqref{eq:f}, where noise has been neglected, the following three statements are equivalent.
+	\begin{enumerate}
+		\item The left invariant error propagation \eqref{eq:err_L} is state independent.
+		\item The right invariant error propagation \eqref{eq:err_R} is state independent.
+		\item Equation \eqref{eq:inv_rel} is satisfied.
+	\end{enumerate}
+\end{theorem}
+Note that the case of left and right-invariant functions is captured by \eqref{eq:inv_rel}. The proofs shown below are based on \cite{Barrau2017,Barrau2015}.
+\textit{Proof} It will be shown that 1 $\implies$ 3. The proof will use the identity
+\begin{align}
+	\frac{\dee}{\dt}\mbf{X}^{-1} & = \frac{\dee}{\dt}\left(\mbf{X}^{-1}\mbf{X}\mbf{X}^{-1}\right) \notag \\
+	 & = \frac{\dee}{\dt}\mbf{X}^{-1} + \mbf{X}^{-1}\frac{\dee}{\dt}\left(\mbf{X}\mbf{X}^{-1}\right)\notag \\
+	 & = \frac{\dee}{\dt}\mbf{X}^{-1} + \mbf{X}^{-1}\mbfdot{X}\mbf{X}^{-1} + \mbf{X}^{-1}\mbf{X}\frac{\dee}{\dt}\mbf{X}^{-1}\notag \\
+	 & = -\mbf{X}^{-1}\mbfdot{X}\mbf{X}^{-1}. \label{eq:X_inv_dot}
+\end{align}
+Given the left-invariant error \eqref{eq:err_L} and using \eqref{eq:X_inv_dot}, write \eqref{eq:traj_ind} as 
+\begin{align}
+	\mbf{G}\left(\mbf{X}_a^{-1}\mbf{X}_b, \mbf{u}\right) &= \f{\dee}{\dt} \left(\mbf{X}_a^{-1}\mbf{X}_b\right) \notag \\
+	& = \frac{\dee}{\dt}\mbf{X}_a^{-1}\mbf{X}_b + \mbf{X}_a^{-1}\dot{\mbf{X}}_b \notag \\
+	& = -\mbf{X}_a^{-1}\mbfdot{X}_a\mbf{X}_a^{-1}\mbf{X}_b + \mbf{X}_a^{-1}\mbf{F}\left(\mbf{X}_b,\mbf{u}\right) \notag \\
+	& = -\mbf{X}_a^{-1}\mbf{F}\left(\mbf{X}_a,\mbf{u}\right)\mbf{X}_a^{-1}\mbf{X}_b + \mbf{X}_a^{-1}\mbf{F}\left(\mbf{X}_b,\mbf{u}\right) \label{eq:p_con_1},
+\end{align}
+where $\mbf{X}_a,\mbf{X}_b \in \mc{G}$. Letting $\mbf{X}_b = \mbf{X}_2$ and $\mbf{X}_a = \mbf{1}$, \eqref{eq:p_con_1} is
+\beq
+	\mbf{G}\left(\mbf{X}_2, \mbf{u}\right) = -\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_2 +\mbf{F}\left(\mbf{X}_2,\mbf{u}\right). \label{eq:p_con_2}
+\eeq
+Next, let $\mbf{X}_b = \mbf{X}_1\mbf{X}_2$ and $\mbf{X}_a = \mbf{X}_1$ in \eqref{eq:p_con_1} to get
+\begin{align}
+	\mbf{G}\left(\mbf{X}_1^{-1}\mbf{X}_1\mbf{X}_2, \mbf{u}\right) &=  -\mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1,\mbf{u}\right)\mbf{X}_1^{-1}\mbf{X}_1\mbf{X}_2 + \mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1\mbf{X}_2,\mbf{u}\right), \notag \\
+	\mbf{G}\left(\mbf{X}_2, \mbf{u}\right) &=  -\mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1,\mbf{u}\right)\mbf{X}_2 + \mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1\mbf{X}_2,\mbf{u}\right). \label{eq:p_con_3}
+\end{align}
+Equating \eqref{eq:p_con_2} and \eqref{eq:p_con_3}, 
+\begin{align*}
+	  -\mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1,\mbf{u}\right)\mbf{X}_2 + \mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1\mbf{X}_2,\mbf{u}\right) &= -\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_2 +\mbf{F}\left(\mbf{X}_2,\mbf{u}\right), \notag \\
+	  \mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1\mbf{X}_2,\mbf{u}\right) &= \mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1,\mbf{u}\right)\mbf{X}_2 +\mbf{F}\left(\mbf{X}_2,\mbf{u}\right) -\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_2, \notag \\
+	 \mbf{F}\left(\mbf{X}_1\mbf{X}_2,\mbf{u}\right) &=\mbf{F}\left(\mbf{X}_1,\mbf{u}\right)\mbf{X}_2 + \mbf{X}_1\mbf{F}\left(\mbf{X}_2,\mbf{u}\right) - \mbf{X}_1\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_2,
+\end{align*}
+which is \eqref{eq:inv_rel}. Thus, 1 $\implies$ 3. Proving 2 $\implies$ 3 is analogous. To prove 3~$\implies$~1, begin with \eqref{eq:inv_rel} and rearrange to yield
+\begin{align}
+	\mbf{F}\left(\mbf{X}_1\mbf{X}_2,\mbf{u}\right) & = \mbf{X}_1\mbf{F}\left(\mbf{X}_2,\mbf{u}\right) +\mbf{F}\left(\mbf{X}_1,\mbf{u}\right)\mbf{X}_2 - \mbf{X}_1\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_2, \notag \\
+	\mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1\mbf{X}_2,\mbf{u}\right) & =\mbf{F}\left(\mbf{X}_2,\mbf{u}\right) + \mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1,\mbf{u}\right)\mbf{X}_2 -\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_2, \notag \\
+	-\mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1,\mbf{u}\right)\mbf{X}_2 + \mbf{X}_1^{-1}\mbf{F}\left(\mbf{X}_1\mbf{X}_2,\mbf{u}\right) & =\mbf{F}\left(\mbf{X}_2,\mbf{u}\right) -\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_2. \label{eq:p_con_4}
+\end{align}
+Letting $\mbf{X}_1 = \mbf{X}_a$ and $\mbf{X}_2 = \mbf{X}_a^{-1}\mbf{X}_b$, \eqref{eq:p_con_4} becomes
+\begin{align}	
+	-\mbf{X}_a^{-1}\mbf{F}\left(\mbf{X}_a,\mbf{u}\right)\mbf{X}_a^{-1}\mbf{X}_b + \mbf{X}_a^{-1}\mbf{F}\left(\mbf{X}_a\mbf{X}_a^{-1}\mbf{X}_b,\mbf{u}\right) & =\mbf{F}\left(\mbf{X}_a^{-1}\mbf{X}_b,\mbf{u}\right) -\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_a^{-1}\mbf{X}_b, \notag \\
+	-\mbf{X}_a^{-1}\mbfdot{X}_a\mbf{X}_a^{-1}\mbf{X}_b + \mbf{X}_a^{-1}\mbfdot{X}_b & =\mbf{F}\left(\mbf{X}_a^{-1}\mbf{X}_b,\mbf{u}\right) -\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}_a^{-1}\mbf{X}_b. \label{eq:p_con_5}
+\end{align}
+Using \eqref{eq:X_inv_dot} and defining $\mbf{X}_a^{-1}\mbf{X}_b$ to be the left-invariant error $\mbfdel{X}^\mathrm{L}$, \eqref{eq:p_con_5} is
+\begin{align}	
+	\frac{\dee}{\dt}\mbf{X}_a^{-1}\mbf{X}_b + \mbf{X}_a^{-1}\mbfdot{X}_b & =\mbf{G}\left(\mbfdel{X}^\mathrm{L}, \mbf{u}\right), \notag \\
+	\frac{\dee}{\dt}\left(\mbf{X}_a^{-1}\mbf{X}_b\right) & =\mbf{G}\left(\mbfdel{X}^\mathrm{L}, \mbf{u}\right), \notag \\
+	\delta \mbfdot{X}^\mathrm{L} & =\mbf{G}\left(\mbfdel{X}^\mathrm{L}, \mbf{u}\right). \notag
+\end{align}
+which is \eqref{eq:traj_ind}. Thus, 3 $\implies$ 1. The proof that  3 $\implies$ 2 is similar.
+\begin{theorem}
+	\label{thm:log_lin}
+	Consider the error $\mbfdel{X}$ between two trajectories and let $\mbf{A}$ be defined such that
+	\bdis
+		\mbf{G}(\expmapw{\mbs{\xi}}) = \mbf{A}\mbs{\xi} + \mathcal{O}(\norm{\mbsdel{\xi}}^2).			\edis
+	Let $\mbs{\xi}(0)$ be defined such that $\expmapw{\mbs{\xi}(0)} = \mbfdel{X}(0)$. If $\mbs{\xi}$ is defined for $t > 0$ by the linear differential equation
+	\bdis
+		\f{\dee}{\dt}\mbs{\xi} =\mbf{A}\mbs{\xi},
+	\edis
+	then 
+	\bdis
+		\mbfdel{X} = \expmapw{\mbs{\xi}}, \forall t \geq 0.
+	\edis
+\end{theorem}
+Theorem~\ref{thm:log_lin} implies that the nonlinear error can be recovered exactly from a time-varying linear differential equation. The proof of this theorem can be found in \cite{Barrau2017}.
+
+\section{Invariant Filtering in Discrete Time}
+
+The discrete-time invariant extended Kalman filter was introduced in \cite{Barrau2018}. However, only the left-invariant case is presented. Here, both the left and right-invariant cases are considered. The proofs shown herein are also either incomplete or missing in the literature \cite{Chauchat2018,persComm2017}. The proofs are similar to those presented in \ref{sec:IEKF_c}. However, the definition of a group-affine function is different for a discrete-time process model, and Theorem~\ref{thm:inv_c} must be altered. 
+
+Consider the discrete-time system
+\beq
+	\mbf{X}_k =\mbf{F}_{k-1}(\mbf{X}_{k-1}, \mbf{u}_{k-1},\mbf{w}_{k-1}). \label{eq:X_k}
+\eeq
+Equation \eqref{eq:X_k} represents the most general case, as using \eqref{eq:X_k} allows for the noise to enter the system in a physically meaningful way. However, an approximation is often used to ease derivations. This approximation makes use of the uncertainty representations described in Section~\ref{ssec:uncertainty}. Recall the definition of the left-invariant error \eqref{eq:err_L}. Letting $\mbf{F}_{k-1}(\mbf{X}_{k-1}, \mbf{u}_{k-1})$ be the true state, the perturbed state can be written as
+\beq
+	\mbf{X}_k =\mbf{F}_{k-1}(\mbf{X}_{k-1}, \mbf{u}_{k-1})\expmapw{\mbf{w}_{k-1}}. \label{eq:X_k_L} 
+\eeq
+Similarly, for a right-invariant error,
+\beq
+	\mbf{X}_k = \expmapw{\mbf{w}_{k-1}}\mbf{F}_{k-1}(\mbf{X}_{k-1}, \mbf{u}_{k-1}). \label{eq:X_k_R} 
+\eeq
+The discrete-time model must be group affine. As the group-affine definition involves neglecting noise, the choice of model is irrelevant. Choosing the discrete-time model \eqref{eq:X_k}, a group affine function satisfies 
+\beq
+	\mbf{F}\left(\mbf{X}_1 \mbf{X}_2, \mbf{u},\mbf{0}\right) =\mbf{F}\left(\mbf{X}_1, \mbf{u},\mbf{0}\right)\mbf{F}\left(\mbf{1}, \mbf{u},\mbf{0}\right)^{-1}\mbf{F}\left(\mbf{X}_2, \mbf{u},\mbf{0}\right), \label{eq:inv_rel_dis}
+\eeq
+where the subscripts $k$ have been dropped. 
+
+\begin{theorem}
+	\label{thm:inv}
+	For \eqref{eq:X_k_L} or \eqref{eq:X_k_R}, where noise has been neglected, the following three statements are equivalent:
+	\begin{enumerate}
+		\item There exists a function $\mbf{G}$ such that $\mbf{F}(\mbf{X}_2,\mbf{u})^{-1}\mbf{F}(\mbf{X}_1,\mbf{u}) =\mbf{G}(\mbf{X}_2^{-1}\mbf{X}_1,\mbf{u})$.
+		\item There exists a function $\mbf{G}$ such that $\mbf{F}(\mbf{X}_2,\mbf{u})\mbf{F}(\mbf{X}_1,\mbf{u})^{-1} =\mbf{G}(\mbf{X}_2\mbf{X}_1^{-1},\mbf{u})$.
+		\item Equation \eqref{eq:inv_rel_dis} is satisfied.
+	\end{enumerate}
+	\sloppy Moreover, for each $\mbf{u} \in\mathbb{R}^{n_u}$, there exists a matrix $\mbf{A} \in \mathbb{R}^{d \times d}$  such that $\forall \mbs{\xi} \in \mathbb{R}^d, \;\mbf{G}\left(\expmapw{\mbs{\xi}},\mbf{u}\right) = \expmapw{\left(\mbf{A} \mbs{\xi}\right)}$.
+\end{theorem}
+The proofs for this theorem can be partly found in \cite{Chauchat2018,persComm2017}. A partial proof is presented here.
+\textit{Proof}: To prove $1 \implies 3$, begin with  $\mbf{F}(\mbf{X}_b,\mbf{u})^{-1}\mbf{F}(\mbf{X}_a,\mbf{u}) =\mbf{G}(\mbf{X}_b^{-1}\mbf{X}_a,\mbf{u})$ and let $\mbf{X}_a = \mbf{X}_2$ and $\mbf{X}_b = \mbf{1}$. Then,
+\beq
+	\mbf{F}(\mbf{1},\mbf{u})^{-1}\mbf{F}(\mbf{X}_2,\mbf{u}) =\mbf{G}(\mbf{X}_2,\mbf{u}) \label{eq:p_dis_1}.
+\eeq
+Now, let  $\mbf{X}_b = \mbf{X}_1$ and $\mbf{X}_a = \mbf{X}_1\mbf{X}_2$ giving
+\beq
+	\mbf{F}(\mbf{X}_1,\mbf{u})^{-1}\mbf{F}(\mbf{X}_1\mbf{X}_2,\mbf{u}) =\mbf{G}(\mbf{X}_1^{-1}\mbf{X}_1\mbf{X}_2,\mbf{u}) = \mbf{G}(\mbf{X}_2,\mbf{u})\label{eq:p_dis_2}.
+\eeq
+Equating \eqref{eq:p_dis_1} and \eqref{eq:p_dis_2} yields
+\begin{align}
+	\mbf{F}(\mbf{X}_1,\mbf{u})^{-1}\mbf{F}(\mbf{X}_1\mbf{X}_2,\mbf{u}) & =\mbf{F}(\mbf{1},\mbf{u})^{-1}\mbf{F}(\mbf{X}_2,\mbf{u}), \notag \\
+	\mbf{F}(\mbf{X}_1\mbf{X}_2,\mbf{u}) & =\mbf{F}(\mbf{X}_1,\mbf{u})\mbf{F}(\mbf{1},\mbf{u})^{-1}\mbf{F}(\mbf{X}_2,\mbf{u})\notag,
+\end{align}
+which is $3$.
+
+To show $3 \implies 1$, begin with
+\begin{align}
+	\mbf{F}(\mbf{X}_a,\mbf{u})\mbf{F}(\mbf{1},\mbf{u})^{-1}\mbf{F}(\mbf{X}_b,\mbf{u}) & =\mbf{F}(\mbf{X}_a\mbf{X}_b,\mbf{u}), \notag \\
+	\mbf{F}(\mbf{X}_a,\mbf{u})\mbf{G}(\mbf{X}_b,\mbf{u}) & =\mbf{F}(\mbf{X}_a\mbf{X}_b,\mbf{u}), \notag \\
+	\mbf{G}(\mbf{X}_b,\mbf{u}) & =\mbf{F}(\mbf{X}_a,\mbf{u})^{-1}\mbf{F}(\mbf{X}_a\mbf{X}_b,\mbf{u}). \notag
+\end{align}
+Letting $\mbf{X}_a = \mbf{X}_2$ and $\mbf{X}_b = \mbf{X}_2^{-1} \mbf{X}_1$, then
+\bdis
+	\mbf{G}\left(\mbf{X}_2^{-1} \mbf{X}_1\right) =\mbf{F}(\mbf{X}_2,\mbf{u})^{-1}\mbf{F}(\mbf{X}_1,\mbf{u}),
+\edis
+which is $1$.
+
+To prove $2 \implies 3$, similarly begin with  $\mbf{F}(\mbf{X}_b,\mbf{u})\mbf{F}(\mbf{X}_a,\mbf{u})^{-1} =\mbf{G}(\mbf{X}_b\mbf{X}_a^{-1},\mbf{u})$ and let $\mbf{X}_b = \mbf{X}_1$ and $\mbf{X}_a = \mbf{1}$. Then,
+\beq
+	\mbf{F}(\mbf{X}_1,\mbf{u})\mbf{F}(\mbf{1},\mbf{u})^{-1} =\mbf{G}(\mbf{X}_1,\mbf{u}) \label{eq:p_dis_3}.
+\eeq
+Now, let  $\mbf{X}_b = \mbf{X}_1\mbf{X}_2$ and $\mbf{X}_a = \mbf{X}_2$ giving
+\beq
+	\mbf{F}(\mbf{X}_1\mbf{X}_2,\mbf{u})\mbf{F}(\mbf{X}_2,\mbf{u})^{-1}  =\mbf{G}(\mbf{X}_1\mbf{X}_2\mbf{X}_2^{-1},\mbf{u}) = \mbf{G}(\mbf{X}_1,\mbf{u})\label{eq:p_dis_4}.
+\eeq
+Equating \eqref{eq:p_dis_3} and \eqref{eq:p_dis_4} yields
+\begin{align}
+	\mbf{F}(\mbf{X}_1\mbf{X}_2,\mbf{u})\mbf{F}(\mbf{X}_2,\mbf{u})^{-1}  & =\mbf{F}(\mbf{X}_1,\mbf{u})\mbf{F}(\mbf{1},\mbf{u})^{-1}, \notag \\
+	\mbf{F}(\mbf{X}_1\mbf{X}_2,\mbf{u}) & =\mbf{F}(\mbf{X}_1,\mbf{u})\mbf{F}(\mbf{1},\mbf{u})^{-1}\mbf{F}(\mbf{X}_2,\mbf{u})\notag,
+\end{align}
+which is $3$.
+
+To show $3 \implies 2$, begin with
+\begin{align}
+	\mbf{F}(\mbf{X}_a,\mbf{u})\mbf{F}(\mbf{1},\mbf{u})^{-1}\mbf{F}(\mbf{X}_b,\mbf{u}) & =\mbf{F}(\mbf{X}_a\mbf{X}_b,\mbf{u}), \notag \\
+	\mbf{G}(\mbf{X}_a,\mbf{u})\mbf{F}(\mbf{X}_b,\mbf{u}) & =\mbf{F}(\mbf{X}_a\mbf{X}_b,\mbf{u}), \notag \\
+	\mbf{G}(\mbf{X}_a,\mbf{u}) & =\mbf{F}(\mbf{X}_a\mbf{X}_b,\mbf{u})\mbf{F}(\mbf{X}_b,\mbf{u})^{-1} . \notag
+\end{align}
+Letting $\mbf{X}_a = \mbf{X}_1 \mbf{X}_2^{-1}$ and $\mbf{X}_b = \mbf{X}_2$, then
+\bdis
+	\mbf{G}\left(\mbf{X}_1 \mbf{X}_2^{-1}\right) =\mbf{F}(\mbf{X}_1,\mbf{u})\mbf{F}(\mbf{X}_2,\mbf{u})^{-1} ,
+\edis
+which is $1$.
+
+The proof that for each $\mbf{u} \in\mathbb{R}^{n_u}$, there exists a matrix $\mbf{A} \in \mathbb{R}^{d \times d}$  such that $\forall \mbs{\xi} \in \mathbb{R}^d, \;\mbf{G}\left(\expmapw{\mbs{\xi}},\mbf{u}\right) = \expmapw{\left(\mbf{A} \mbs{\xi}\right)}$ is out of the scope of this thesis, but can be found in \cite{Barrau2017}. The input $\mbf{u}$ is generally absorbed by $\mbf{A}$, but it may also vanish in the derivation. 
+
+\section{Invariant Extended Kalman Filtering}
+
+This section, along with Sections~\ref{sec:LIEFK}~and~\ref{sec:RIEFK}, summarizes in more detail some main results from \cite{Barrau2017} and \cite{Barrau2018}, in which the authors outline how to implement the IEKF. As with any Kalman filter, the states are predicted using the input $\mbf{u}$ and corrected using some measurement $\mbf{y}_k \in \mathbb{R}^{n_y}$. Throughout this thesis, $\mbfcheck{X}$ and $\mbfhat{X}$ are used to denote the estimated state after the prediction and correction steps, respectively.
+
+The continuous-time prediction step is
+\beqarray
+	\dot{\mbfcheck{X}} & = &\mbf{F}(\mbfhat{X}, \mbf{u},\mbf{0}), \label{eq:X_dot} \\
+	\dot{\mbfcheck{P}} & = & \mbf{A} \mbfhat{P} + \mbfhat{P} \mbf{A}^\trans + \mbf{L} \mbf{Q} \mbf{L}^\trans.
+	\label{eq:P_pred_cont}
+\eeqarray
+The method to find $\mbf{A}$ and $\mbf{L}$ is described in Sections~\ref{ssec:ctp_L} and \ref{ssec:ctp_R} for left and right-invariant errors, respectively. In practice, \eqref{eq:X_dot} and \eqref{eq:P_pred_cont} must be integrated using some numerical integration method, such as an Euler integration.
+The discrete-time prediction is 
+\beqarray
+	\mbfcheck{X}_k & = &\mbf{F}_{k-1}(\mbfhat{X}_{k-1}, \mbf{u}_{k-1},\mbf{0}), \label{eq:X_pred_disc} \\
+	\mbfcheck{P}_k & = & \mbf{A}_{k-1} \mbfhat{P}_{k-1}\mbf{A}_{k-1} ^\trans + \mbf{L}_{k-1} \mbf{Q}_{k-1} \mbf{L}_{k-1}^\trans.
+	\label{eq:P_pred_disc}
+\eeqarray
+The discrete-time Jacobians are derived in Sections~\ref{ssec:DTP_L} and \ref{ssec:DTP_R} for left and right-invariant errors, respectively. The correction step is performed when a measurement $\mbf{y}_k$ is available. The left and right-invariant measurement models considered in this thesis are
+\begin{align}
+	\mbf{y}_k^\mathrm{L} &= \mbf{X}_k \mbf{b}_k + \mbf{v}_k, \label{eq:y_L} \\
+	\mbf{y}_k^\mathrm{R} &= \mbf{X}_k^{-1} \mbf{b}_k + \mbf{v}_k,  \label{eq:y_R}
+\end{align}
+respectively, where $\mbf{b}_k$ is some known vector and $\mbf{v}_k \sim \mathcal{N}(\mbf{0},\mbf{R}_k)$. Typically, a first-order Taylor series expansion of the measurement model leads to the measurement model and noise Jacobians $\mbf{H}_k$ and $\mbf{M}_k$. Here an alternative method is used, where the innovation is linearized.  The cases for both the left and right-invariant measurement models are covered in Sections~\ref{sec:LIEFK} and \ref{sec:RIEFK}, respectively. The Kalman gain at time $t_k$ is computed using
+\beq
+	\mbf{K}_k = \mbfcheck{P}_k \mbf{H}_k^\trans (\mbf{H}_k \mbfcheck{P}_k \mbf{H}_k^\trans + \mbf{M}_k \mbf{R}_k \mbf{M}_k ^\trans) ^{-1}.
+	\label{eq:K}
+\eeq
+The covariance update is
+\beq
+	\mbfhat{P}_k = (\mbf{1} - \mbf{K}_k \mbf{H}_k) \mbfcheck{P}_k (\mbf{1} - \mbf{K}_k \mbf{H}_k)^\trans + \mbf{K}_k \mbf{M}_k \mbf{R}_k \mbf{M}_k^\trans \mbf{K}_k^\trans.
+	\label{eq:P_corr}
+\eeq
+
+\section{Left-Invariant Extended Kalman Filter}
+\label{sec:LIEFK}
+The LIEKF is used for a left-invariant measurement model of the form \eqref{eq:y_L}. Multiple vector measurements may be used, but only one is shown here. The measurement model is left-invariant because, in the absence of noise, 
+\begin{align*}
+	\mbf{y}_k & = \mbf{X}_k\mbf{b}_k, \\
+	\mbf{X}_{k}'\mbf{y}_k &  = \mbf{X}_{k}'\left(\mbf{X}_k \mbf{b}_k \right), \\
+	\mbftilde{y}_k & = \mbftilde{X}_k\mbf{b}_k,
+\end{align*}
+where $\mbf{X}_{k}'$ is arbitrary element of $\mathcal{G}$. The left-invariant error is given by \eqref{eq:err_L}. This error is left-invariant because the error is invariant to left multiplication by an element of $\mathcal{G}$,
+\begin{align*}
+	\mbfdel{X}^\mathrm{L} & = \left(\mbf{X}'\mbf{X}\right)^{-1} \left(\mbf{X}'\mbfhat{X}\right), \\
+	& = \mbf{X}^{-1}\mbf{X}'^{-1} \mbf{X}'\mbfhat{X} \\
+	& = \mbf{X}^{-1} \mbfhat{X},
+\end{align*}
+where $\mbf{X}' \in \mc{G}$.
+
+\subsection{Continuous-Time Prediction}
+\label{ssec:ctp_L}
+The error propagation, found by computing the time-derivative of \eqref{eq:err_L}, leads to an equation of the form
+\begin{align}
+	\delta \mbfdot{X}^\mathrm{L}& = \f{\dee}{\dt}(\mbf{X}^{-1}\mbfhat{X}) \notag \\
+	&= \f{\dee}{\dt}\mbf{X}^{-1} \mbfhat{X} + \mbf{X}^{-1} \dot{\mbfhat{X}} \nonumber \\
+	& = -\mbf{X}^{-1}\mbfdot{X}\mbf{X}^{-1}\mbfhat{X} + \mbf{X}^{-1}\dot{\mbfhat{X}} \nonumber \\
+	& = -\mbf{X}^{-1}\mbfdot{X}\mbfdel{X}^\mathrm{L} + \mbf{X}^{-1}\dot{\mbfhat{X}} \nonumber \\
+	& = -\mbf{X}^{-1}(\mbf{F}\left(\mbf{X},\mbf{u}\right) + \mbf{X}\mbf{W})\mbfdel{X}^\mathrm{L} + \mbf{X}^{-1}\mbf{F}\left(\mbfhat{X},\mbf{u}\right) \nonumber \\
+	& = \mbf{X}^{-1}\left(\mbf{F}\left(\mbfhat{X},\mbf{u}\right) -\mbf{F}\left(\mbf{X},\mbf{u}\right)\mbfdel{X}^\mathrm{L}\right) -\mbf{W}\mbfdel{X}^\mathrm{L} \nonumber \\
+	& = \mbf{X}^{-1}\left(\mbf{F}\left(\mbf{X}\mbfdel{X}^\mathrm{L},\mbf{u}\right) -\mbf{F}\left(\mbf{X},\mbf{u}\right)\mbfdel{X}^\mathrm{L}\right) -\mbf{W}\mbfdel{X}^\mathrm{L}. \label{eq:Edot_L_1} 
+\end{align}
+Rearranging part of \eqref{eq:Edot_L_1} using \eqref{eq:inv_rel} where $\mbf{X}_1 = \mbf{X}$ and $\mbf{X}_2 = \mbfdel{X}^\mathrm{L}$,
+\begin{align}
+	\delta \mbfdot{X}^\mathrm{L}& = \mbf{X}^{-1}\left(\mbf{X}\mbf{F}\left(\mbfdel{X}^\mathrm{L},\mbf{u}\right) - \mbf{X}\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbfdel{X}^\mathrm{L}\right) -\mbf{W}\mbfdel{X}^\mathrm{L} \nonumber \\
+	& =\mbf{F}\left(\mbfdel{X}^\mathrm{L},\mbf{u}\right) -\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbfdel{X}^\mathrm{L} -\mbf{W}\mbfdel{X}^\mathrm{L}. \label{eq:Edot_L_2}
+\end{align}
+Equation~\eqref{eq:Edot_L_2} is then linearized by letting $\mbfdel{X}^\mathrm{L} \approx \mbf{1} + \mbsdel{\xi}^{\mathrm{L}^\wedge}$. The noise is linearized by letting $\mbf{w} = \mbfbar{w} + \mbfdel{w}$, where $\delta \mbf{w} = \delta \mbf{W}^{\vee}$. As the noise is assumed band-limited and white, $\mbfbar{w} = \mbf{0}$ and $\mbf{w} = \delta \mbf{w}$.  The exact linearization depends on the function $\mbf{F}(\mbf{X},\mbf{u})$, but, neglecting second order terms, it will have the form 
+\beq
+	\delta\mbsdot{\xi}^\mathrm{L} = \mbf{A}\mbsdel{\xi}^\mathrm{L} + \mbf{L}\delta \mbf{w}.
+	\label{eq:Edot_L_lin}
+\eeq
+As guaranteed by Theorem~\ref{thm:inv_c}, as \eqref{eq:f} is group affine, the left-invariant error propagation \eqref{eq:Edot_L_2}, in the absence of noise, is state independent. This remains true even when linearizing. Thus, $\mbf{A}$ will be state-independent. However, no guarantees are made regarding $\mbf{L}$.
+
+\subsection{Discrete-Time Prediction}
+\label{ssec:DTP_L}
+
+Here, the discrete-time model consistent with a left-invariant error, given by \eqref{eq:X_k_L}, is used. The left-invariant error at time $t_k$ is 
+\begin{align}
+	\delta \mbfcheck{X}_k^\mathrm{L} & = \mbf{X}_k^{-1} \mbfcheck{X}_k \notag \\
+	& = \left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\expmapw{\mbf{w}_{k-1}}\right]^{-1}\mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right) \notag \\
+	& = \expmapw{-\mbf{w}_{k-1}}\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1}\mbf{F}\left(\mbfhat{X}_{k-1}\mbf{u}_{k-1}\right). \label{eq:Ek_L_1}
+\end{align}
+Assuming the system satisfies \eqref{eq:inv_rel_dis}, Theorem~\ref{thm:inv} states that
+\begin{align}
+	\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1}\mbf{F}\left(\mbfhat{X}_{k-1}\mbf{u}_{k-1}\right) & =\mbf{G}\left(\mbf{X}_{k-1}^{-1}\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right) \notag \\ 
+	& =\mbf{G}\left(\mbfdel{X}_{k-1}^\mathrm{L},\mbf{u}_{k-1}\right)  \notag \\
+	& =\mbf{G}\left(\exp\left({\mbsdel{\xi}_{k-1}^\mathrm{L}}^\wedge\right),\mbf{u}_{k-1}\right) \notag \\ 
+	& = \exp\left(\left(\mbf{A}_{k-1} \mbsdel{\xi}_{k-1}^\mathrm{L}\right)^\wedge\right). \label{eq:Ek_L_2}
+\end{align}
+Substituting \eqref{eq:Ek_L_2} into \eqref{eq:Ek_L_1} and letting $\mbf{w}_{k-1} = \mbfbar{w}_{k-1} + \mbfdel{w}_{k-1}$, where $\mbfbar{w}_{k-1} = \mbf{0}$, a first-order approximation of the error is 
+\begin{align}
+	\delta \mbfcheck{X}_k^\mathrm{L} & = \exp\left(-\mbfdel{w}_{k-1}^\wedge\right)\exp\left(\left(\mbf{A}_{k-1} \mbsdel{\xi}_{k-1}^\mathrm{L}\right)^\wedge\right), \label{eq:Ek_L_lin1} \\
+	\expmapw{{\delta \mbscheck{\xi}_{k}^\mathrm{L}}} & = \expmapw{\left(-\mbfdel{w}_{k-1} + \mbf{A}_{k-1} \mbsdel{\xi}_{k-1}^\mathrm{L}\right)},  \label{eq:Ek_L_lin2} \\
+	\delta \mbscheck{\xi}_{k}^\mathrm{L} & = \mbf{A}_{k-1} \mbsdel{\xi}_{k-1}^\mathrm{L} - \mbfdel{w}_{k-1}, \label{eq:Ek_L_lin}
+\end{align}
+where $\mbf{L}_{k-1} = \mbf{1}$. 
+This is a first order approximation because the BCH formula was used to go from \eqref{eq:Ek_L_lin1} to \eqref{eq:Ek_L_lin2}. 
+
+\subsection{Discrete-Time Correction}
+
+In the seminal IEKF literature \cite{Barrau2017}, the left-invariant update is
+\bdis
+	\mbfhat{X}_k = \mbfch{X}_k\expmapw{(\mbf{K}_k\mbf{z}_k)},
+\edis
+which is not consistent with the left-invariant error definition. The authors remedy this by negating the measurement Jacobian $\mbf{H}_k$, which in turn negates the gain $\mbf{K}_k$. This approach is not used here, and an update consistent with the left-invariant error definition is used. This left-invariant correction is 
+\beq
+	\mbfhat{X}_k = \mbfcheck{X}_k \exp\left(-\left(\mbf{K}_k \mbf{z}_k\right)^\wedge\right).
+	\label{eq:corr_L} 
+\eeq
+This form emerges from rearranging the definition of the left-invariant error. The left-invariant error between the predicted and corrected state is $\mbfdel{X}_k^\mathrm{L} = \mbfhat{X}_k^{-1}\mbfcheck{X}_k$. Rearranging leads to
+\begin{align}
+	\mbfdel{X}_k^\mathrm{L} &= \mbfhat{X}_k^{-1}\mbfcheck{X}_k, \notag \\
+	\mbfhat{X}_k\mbfdel{X}_k^\mathrm{L} &= \mbfcheck{X}_k, \notag \\
+	\mbfhat{X}_k &=  \mbfcheck{X}_k{\mbfdel{X}_k^\mathrm{L}}^{-1} \notag \\
+	&=  \mbfcheck{X}_k\expmapw{\left(\mbf{K}_k\mbf{z}_k\right)}^{-1} \notag \\
+	&=  \mbfcheck{X}_k\expmapw{-\left(\mbf{K}_k\mbf{z}_k\right)}, \notag
+\end{align}
+which is \eqref{eq:corr_L}.
+The innovation $\mbf{z}_k$ can be written as
+\begin{align}
+	\mbf{z}_k & = \mbfcheck{X}_k^{-1}(\mbf{y}_k - \mbfcheck{y}_k) \label{eq:innovation_L} \\ 
+	& = \mbfcheck{X}_k^{-1}( \mbf{X}_k\mbf{b}_k + \mbf{v}_k - \mbfcheck{X}_k\mbf{b}_k) \nonumber \\
+	& = {\delta \mbfcheck{X}_k^\mathrm{L}}^{-1}\mbf{b}_k + \mbfcheck{X}_k^{-1}\mbf{v}_k - \mbf{b}_k. \label{eq:z_L}
+\end{align}
+The innovation is written as \eqref{eq:innovation_L} to ensure that the left-invariant error appears in \eqref{eq:z_L}.
+To linearize \eqref{eq:z_L}, as in the prediction step, let $\delta {\mbfcheck{X}_k^\mathrm{L}}^{-1} = \mbf{1} -\delta  {\mbscheck{\xi}_k^\mathrm{L}}^\wedge$, and $\mbf{v}_k = \mbfbar{v}_k + \mbfdel{v}_k$ with $\mbfbar{v}_k = \mbf{0}$,
+\begin{align}
+	\mbf{z}_k &=  \left(\mbf{1} -\delta  {\mbscheck{\xi}_k^\mathrm{L}}^\wedge\right)\mbf{b}_k + \mbfcheck{X}_k^{-1}\mbfdel{v}_k - \mbf{b}_k. \\
+	 &=  -\delta  {\mbscheck{\xi}_k^\mathrm{L}}^\wedge\mbf{b}_k + \mbfcheck{X}_k^{-1}\mbfdel{v}_k. \label{eq:z_L_lin1}
+\end{align}
+Lastly, \eqref{eq:z_L_lin1} must be rearranged such that it can be written as 
+\beq
+	\mbf{z}_k = \mbf{H}_k \delta \mbscheck{\xi}_k^{\mathrm{L}} + \mbf{M}_k\mbfdel{v}_k,
+\label{eq:E_L_k_lin}
+\eeq
+where $\mbf{M}_k = \mbfcheck{X}_k^{-1}$. The measurement model Jacobian $\mbf{H}_k$ will only depend on the known vector $\mbf{b}_k$.  
+
+\section{Right-Invariant Extended Kalman Filter}
+\label{sec:RIEFK}
+
+The RIEKF is to be used for a right-invariant measurement model of the form \eqref{eq:y_R}. Multiple vector measurements may be used, but only one is shown here. The measurement model is right-invariant because, in the absence of noise, 
+\begin{align*}
+	\mbf{y}_k & = \mbf{X}_k^{-1}\mbf{b}_k, \\
+	\mbf{X}_{k}'^{-1}\mbf{y}_k &  = \mbf{X}_{k}'^{-1}\left(\mbf{X}_k^{-1} \mbf{b}_k \right) \\
+	&  = \left(\mbf{X}_k\mbf{X}_{k}'\right)^{-1}\mbf{b}_k,  \\
+	\mbftilde{y}_k & = \mbftilde{X}_k^{-1}\mbf{b}_k.
+\end{align*}
+where $\mbf{X}_{k}'$ is an arbitrary element of $\mathcal{G}$. The right-invariant error is given by \eqref{eq:err_R}. This error is right-invariant because it is invariant to right multiplication by an element of $\mathcal{G}$, 
+\begin{align*}
+	\mbfdel{X}^\mathrm{R} & = \left(\mbfhat{X}\mbf{X}'\right)\left(\mbf{X} \mbf{X}'\right)^{-1} \\
+	& = \mbfhat{X}\mbf{X}'\mbf{X}'^{-1}\mbf{X}^{-1} \\
+	& = \mbfhat{X} \mbf{X}^{-1}.
+\end{align*}
+where $\mbf{X}' \in \mc{G}$.
+
+\subsection{Continuous-Time Prediction}
+\label{ssec:ctp_R}
+
+The error propagation, found by computing the time-derivative of \eqref{eq:err_R}, leads to an equation of the form
+\begin{align}
+	\delta \mbfdot{X}^\mathrm{R} & = \f{\dee}{\dt}\left( \mbfhat{X}\mbf{X}^{-1}\right) \notag \\
+	&= \dot{\mbfhat{X}}\mbf{X}^{-1} + \mbfhat{X} \f{\dee}{\dt}\mbf{X}^{-1} \nonumber \\
+	& = \dot{\mbfhat{X}}\mbf{X}^{-1} - \mbfhat{X}\mbf{X}^{-1}\mbfdot{X}\mbf{X}^{-1} \nonumber \\
+	& =\mbf{F}\left(\mbfhat{X},\mbf{u}\right)\mbf{X}^{-1} - \mbfdel{X}^\mathrm{R}\left(\mbf{F}\left(\mbf{X},\mbf{u}\right) + \mbf{X}\mbf{W}\right)\mbf{X}^{-1} \nonumber \\
+	& = \left(\mbf{F}\left(\mbfhat{X},\mbf{u}\right) - \mbfdel{X}^\mathrm{R}\mbf{F}\left(\mbf{X},\mbf{u}\right)\right)\mbf{X}^{-1} - \mbfdel{X}^\mathrm{R}\mbf{X}\mbf{W}\mbf{X}^{-1} \nonumber \\
+	& = \left(\mbf{F}\left(\mbfhat{X},\mbf{u}\right) - \mbfdel{X}^\mathrm{R}\mbf{F}\left(\mbf{X},\mbf{u}\right)\right)\mbf{X}^{-1} - \mbfhat{X}\mbf{W}\mbfhat{X}^{-1}\mbfdel{X}^\mathrm{R}.
+\label{eq:Edot_R_1} 
+\end{align}
+Rearranging part of \eqref{eq:Edot_R_1} using \eqref{eq:inv_rel} where $\mbf{X}_1 = \mbfdel{X}^\mathrm{R}$ and $\mbf{X}_2 = \mbf{X}$,
+\begin{align}
+	\delta \mbfdot{X}^\mathrm{R} & = \left(\mbf{F}\left(\mbfdel{X}^\mathrm{R},\mbf{u}\right)\mbf{X} - \mbfdel{X}^\mathrm{R}\mbf{F}\left(\mbf{1},\mbf{u}\right)\mbf{X}\right)\mbf{X}^{-1} - \mbfhat{X}\mbf{W}\mbfhat{X}^{-1}\mbfdel{X}^\mathrm{R} \nonumber \\
+	& =\mbf{F}\left(\mbfdel{X}^\mathrm{R},\mbf{u}\right) - \mbfdel{X}^\mathrm{R}\mbf{F}\left(\mbf{1},\mbf{u}\right) - \mbfhat{X}\mbf{W}\mbfhat{X}^{-1}\mbfdel{X}^\mathrm{R}. \label{eq:Edot_R_2}
+\end{align}
+As in the left-invariant case, \eqref{eq:Edot_R_2} is linearized by letting $\mbfdel{X}^\mathrm{R} \approx \mbf{1} + \mbsdel{\xi}^{\mathrm{R}^\wedge}$, $\mbf{W} = \mbfdel{W}$, and neglecting second order terms. The exact linearization depends on the function $\mbf{F}(\mbf{X},\mbf{u})$, but it will have the form 
+\beq
+	\delta \mbsdot{\xi}^\mathrm{R} = \mbf{A}\mbsdel{\xi}^\mathrm{R} + \mbf{L}\mbfdel{w},
+	\label{eq:Edot_R_lin}
+\eeq
+where $\delta \mbf{w} = \delta \mbf{W}^{\vee}$.
+
+\subsection{Discrete-Time Prediction}
+\label{ssec:DTP_R}
+
+Here, the discrete-time model consistent with a right-invariant error, given by \eqref{eq:X_k_R}, is used. The right-invariant error at time $t_k$ is 
+\begin{align}
+	\delta \mbfcheck{X}_k^\mathrm{R} & = \mbfcheck{X}_k \mbf{X}_k^{-1} \notag \\
+	& = \mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\left[\exp\left(\mbf{w}_{k-1}^\wedge\right)\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1} \notag \\
+	& = \mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1}\exp\left(-\mbf{w}_{k-1}^\wedge\right) \label{eq:Ek_R_1}
+\end{align}
+From \eqref{eq:Ek_R_1}, the result of Theorem~\ref{thm:inv} can now be used to yield
+\begin{align}
+	\delta \mbfcheck{X}_k^\mathrm{R} & =\mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1}\exp\left(-{\mbf{w}_{k-1}}^\wedge\right)  \notag \\
+	& = \left[\mbf{G}\left(\mbf{X}_{k-1}^{-1}\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1}\exp\left(-\mbf{w}_{k-1}^\wedge\right) \notag \\ 
+	& = \left[\mbf{G}\left({\mbfdel{X}_{k-1}^\mathrm{R}}^{-1},\mbf{u}_{k-1}\right)\right]^{-1}\exp\left(-\mbf{w}_{k-1}^\wedge\right)\notag \\
+	& = \left[\mbf{G}\left(\exp\left(-{\mbsdel{\xi}_{k-1}^\mathrm{R}}^\wedge\right),\mbf{u}_{k-1}\right)\right]^{-1}\exp\left(-\mbf{w}_{k-1}^\wedge\right) \notag \\ 
+	& = [\exp\left(-\left(\mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R}\right)^\wedge\right)]^{-1}\exp\left(-\mbf{w}_{k-1}^\wedge\right)\notag \\ 
+	& = \exp\left(\left(\mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R}\right)^\wedge\right)\exp\left(-\mbf{w}_{k-1}^\wedge\right) \notag \\
+	& = \exp\left(\left(\mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R}- \mbf{w}_{k-1}\right)^\wedge\right).\label{eq:Ek_R_2}
+\end{align}
+Letting $\delta \mbfcheck{X}_k^\mathrm{R} = \exp\left(\delta {\mbscheck{\xi}_k^\mathrm{R}}^\wedge\right)$, a first-order approximation of \eqref{eq:Ek_R_2} is
+\begin{align}
+	\exp\left({\delta \mbscheck{\xi}_k^\mathrm{R}}^\wedge\right) & = \exp\left(\left(\mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R}  - \mbf{w}_{k-1} \right)^\wedge\right), \notag \\
+	\delta \mbscheck{\xi}_k^\mathrm{R} & = \mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R} + \mbf{L}_{k-1}\mbf{w}_{k-1}. \notag
+\end{align}
+where $\mbf{L}_{k-1} = -\mbf{1}$.
+
+
+The previous derivation uses a mathematically consistent uncertainty representation when injecting noise into the system. However, this approach does not properly represent the way noise typically enters systems. Noise typically enters in a way much more consistent with a left-invariant error definition, as will be seen in Chapter~\ref{chap:SE3}. Therefore, an alternate derivation is presented, where the discrete-time noisy kinematics are given by \eqref{eq:X_k_L}. The right-invariant error at time $t_k$ is
+\begin{align}
+	\delta \mbfcheck{X}_k^\mathrm{R} & = \mbfcheck{X}_k \mbf{X}_k^{-1} \notag \\
+	& = \mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\exp\left({\mbf{w}_{k-1}}^\wedge\right)\right]^{-1} \notag \\
+	& = \mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\exp\left(-{\mbf{w}_{k-1}}^\wedge\right)\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1} \notag \\
+	& = \mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\exp\left(-{\mbf{w}_{k-1}}^\wedge\right)\left[\mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1}\mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1}. \label{eq:Ek_R_3}
+\end{align}
+ Given that $\mbf{F}\left(\mbfhat{X}_{k-1}\mbf{u}_{k-1}\right) \in \mathcal{G}$, and using the adjoint identity \eqref{eq:Ad_identity}, \eqref{eq:Ek_R_3} can be written as
+\beq
+	\delta \mbfcheck{X}_k^\mathrm{R} = \exp\left[-\left(\textrm{Ad}\left(\mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\right)\mbf{w}_{k-1}\right)^\wedge\right]\mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1}. \label{eq:Ek_R_4}
+\eeq
+For ease of notation, let  $\textrm{Ad}(\mbfhat{F}) = \textrm{Ad}\left(\mbf{F}(\mbfhat{X}_{k-1},\mbf{u}_{k-1})\right)$. From \eqref{eq:Ek_R_4}, the result of Theorem~\ref{thm:inv} can now be used to yield
+\begin{align}
+	\delta \mbfcheck{X}_k^\mathrm{R} & =\expmapw{-\left(\textrm{Ad}(\mbfhat{F})\mbf{w}_{k-1}\right)}\mbf{F}\left(\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\left[\mbf{F}\left(\mbf{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1} \notag \\
+	& = \expmapw{-\left(\textrm{Ad}(\mbfhat{F})\mbf{w}_{k-1}\right)}\left[\mbf{G}\left(\mbf{X}_{k-1}^{-1}\mbfhat{X}_{k-1},\mbf{u}_{k-1}\right)\right]^{-1} \notag \\ 
+	& = \expmapw{-\left(\textrm{Ad}(\mbfhat{F})\mbf{w}_{k-1}\right)}\left[\mbf{G}\left({\mbfdel{X}_{k-1}^\mathrm{R}}^{-1},\mbf{u}_{k-1}\right)\right]^{-1} \notag \\
+	& = \expmapw{-\left(\textrm{Ad}(\mbfhat{F})\mbf{w}_{k-1}\right)}\left[\mbf{G}\left(\exp\left(-{\mbsdel{\xi}_{k-1}^\mathrm{R}}^\wedge\right),\mbf{u}_{k-1}\right)\right]^{-1} \notag \\ 
+		& = \expmapw{-\left(\textrm{Ad}(\mbfhat{F})\mbf{w}_{k-1}\right)}[\exp\left(-\left(\mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R}\right)^\wedge\right)]^{-1}\notag \\ 
+		& = \expmapw{-\left(\textrm{Ad}(\mbfhat{F})\mbf{w}_{k-1}\right)}\exp\left(\left(\mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R}\right)^\wedge\right). \label{eq:Ek_R_5}
+\end{align}
+Letting $\delta \mbfcheck{X}_k^\mathrm{R} = \exp\left(\delta {\mbscheck{\xi}_k^\mathrm{R}}^\wedge\right)$ and using the BCH formula, a first-order approximation of \eqref{eq:Ek_R_5} is
+\begin{align}
+	\exp\left({\delta \mbscheck{\xi}_k^\mathrm{R}}^\wedge\right) &= \expmapw{-\left(\textrm{Ad}(\mbfhat{F})\mbf{w}_{k-1}\right)}\exp\left(\left(\mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R}\right)^\wedge\right) \notag \\
+	&\approx \expmapw{\left(\mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R} -  \textrm{Ad}(\mbfhat{F})\mbf{w}_{k-1}\right)}, \notag \\
+	\delta \mbscheck{\xi}_k^\mathrm{R} & = \mbf{A}_{k-1}\mbsdel{\xi}_{k-1}^\mathrm{R} + \mbf{L}_{k-1}\mbf{w}_{k-1}. \notag
+\end{align}
+where $\mbf{L}_{k-1} = -\textrm{Ad}(\mbfhat{F})$.
+
+
+\subsection{Discrete-Time Correction}
+
+The right-invariant update in the literature is
+\bdis
+	\mbfhat{X}_k = \mbfch{X}_k\expmapw{(\mbf{K}_k\mbf{z}_k)},
+\edis
+which is not consistent with the right-invariant error definition. An update consistent with the right-invariant error definition is used. This right-invariant correction is 
+\beq
+	\mbfhat{X}_k = \exp\left(-\left(\mbf{K}_k \mbf{z}_k\right)^\wedge\right) \mbfcheck{X}_k.
+	\label{eq:corr_R} 
+\eeq
+This form emerges from rearranging the definition of the right-invariant error. The right-invariant error between the predicted and corrected state is $\mbfdel{X}_k^\textrm{R} = \mbfcheck{X}_k\mbfhat{X}_k^{-1}$. Rearranging leads to
+\begin{align}
+	\mbfdel{X}_k^\textrm{R} &= \mbfcheck{X}_k\mbfhat{X}_k^{-1}, \notag \\
+	\mbfdel{X}_k^\textrm{R}\mbfhat{X}_k &= \mbfcheck{X}_k, \notag \\
+	\mbfhat{X}_k &=  {\mbfdel{X}_k^\textrm{R}}^{-1}\mbfcheck{X}_k \notag \\
+	&= \expmapw{\left(\mbf{K}_k\mbf{z}_k\right)}^{-1}\mbfcheck{X}_k \notag \\
+	&= \expmapw{-\left(\mbf{K}_k\mbf{z}_k\right)} \mbfcheck{X}_k, \notag
+\end{align}
+which is \eqref{eq:corr_R}.
+
+The innovation $\mbf{z}_k$ can be written as
+\begin{align}
+	\mbf{z}_k & = \mbfcheck{X}_k\left(\mbf{y}_k - \mbfcheck{y}_k\right) \label{eq:innovation_R} \\ 
+	& = \mbfcheck{X}_k\left( \mbf{X}_k^{-1}\mbf{b}_k + \mbf{v}_k - \mbfcheck{X}_k^{-1}\mbf{b}_k\right) \nonumber \\
+	& = \delta \mbfcheck{X}_k^\mathrm{R}\mbf{b}_k  - \mbf{b}_k + \mbfcheck{X}_k\mbf{v}_k. \label{eq:z_R}
+\end{align}
+The innovation is written as \eqref{eq:innovation_R} to ensure that the right-invariant error appears in \eqref{eq:z_R}.
+To linearize \eqref{eq:z_R}, let $\delta \mbfcheck{X}_k^\mathrm{R} \approx \mbf{1} + \delta {\mbscheck{\xi}_k^\mathrm{R}}^\wedge$ and $\mbf{v}_k = \mbfbar{v}_k + \mbfdel{v}_k$ with $\mbfbar{v}_k = \mbf{0}$. Neglecting second order terms, \eqref{eq:z_R} is then 
+\begin{align}
+	\mbf{z}_k &\approx \left(\mbf{1} +  \delta {\mbscheck{\xi}_k^\mathrm{R}}^\wedge\right)\mbf{b}_k - \mbf{b}_k + \mbfcheck{X}_k\mbfdel{v}_k \nonumber \\
+	 & = \delta {\mbscheck{\xi}_k^\mathrm{R}}^\wedge\mbf{b}_k + \mbfcheck{X}_k\mbfdel{v}_k, \label{eq:z_R_lin_1}
+\end{align}
+Lastly, \eqref{eq:z_R_lin_1} must be rearranged such that it can be written as 
+\beq
+	\mbf{z}_k  =  \mbf{H}_k \delta \mbscheck{\xi}_k^\mathrm{R} + \mbf{M}_k \mbfdel{v}_k,
+\label{eq:z_R_lin}
+\eeq
+where $\mbf{M}_k = \mbfcheck{X}_k$. Once again, the measurement model Jacobian $\mbf{H}_k$ is state independent, as it only depends on the known vector $\mbf{b}_k$.
+
+
+\begin{table}[]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|l|l|l|}
+\hline & LIEKF & RIEKF \\ \hhline{|=|=|=|}
+Error Definition & $\mbfdel{X}^{\mathrm{L}}= \mbf{X}^{-1}\mbfhat{X}$ & $\mbfdel{X}^\mathrm{R}$ = $\mbfhat{X}\mbf{X}^{-1}$ \\ \hline
+Innovation       & $\mbf{z}_k = \mbfcheck{X}_k^{-1}(\mbf{y}_k - \mbfcheck{y}_k)$ &  $\mbf{z}_k = \mbfcheck{X}_k(\mbf{y}_k - \mbfcheck{y}_k)$ \\ \hline
+State Correction & $\mbfhat{X}_k = \mbfcheck{X}_k\expmapw{-(\mbf{K}_k\mbf{z}_k)}$    & $\mbfhat{X}_k = \expmapw{-(\mbf{K}_k\mbf{z}_k)}\mbfcheck{X}_k$    \\ \hline
+\end{tabular}
+\caption{Summary of the key LIEKF and RIEKF equations}
+\end{table}

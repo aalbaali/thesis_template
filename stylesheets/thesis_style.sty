@@ -1,0 +1,634 @@
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Packages
+
+% Called in decar-common.sty package ---------------------------------------->
+\usepackage{decar-common}
+
+% \usepackage{xspace}
+% % Puts the limits of integrals on top and bottom
+% \usepackage[cmex10,intlimits]{amsmath} 
+% \usepackage{amssymb}
+% \usepackage{amsthm}
+% \usepackage{bm}
+% \usepackage{accents}
+% \usepackage{array}
+% % \RequirePackage{enumerate}  % Extends enumerate environment
+% \RequirePackage[dvipsnames]{xcolor}  % Extends default colors options
+% \usepackage{paralist}
+% % \RequirePackage{parskip}  % Alters  \parskip{}
+% \RequirePackage{listings}  % Code listings
+% \usepackage{graphicx}    % Add some packages for figures. Read epslatex.pdf on ctan.tug.org
+% \usepackage{subcaption}
+
+% \RequirePackage[
+%       backend   = bibtex,
+%       bibstyle  = ieee,
+%       citestyle = numeric-comp, % authoryear-comp
+%       doi       = false,
+%       isbn      = false,
+%       url       = false,
+%       language  = autocite,
+%       sorting   = none,
+%       date      = year
+%   ]{biblatex} % Bibliography
+% \AtEveryBibitem{\clearlist{language}} % clears language
+% \AtEveryBibitem{\clearfield{note}}    % clears notes
+% % Clear addresses/locations
+% \AtEveryCitekey{\clearlist{location}}
+% \AtEveryBibitem{\clearlist{location}}
+% \DeclareNameAlias{author}{given-family} % Author names: first-last
+% % \DeclareNameAlias{author}{family-given} % Author names: last-first
+% \usepackage{wrapfig}
+% \RequirePackage{setspace}  % \singlespacing{}, \onehalfspacing{}, \doublespacing{}
+% \usepackage{acronym} % For the List of Abbreviations. Read acronym.pdf on ctan.tug.org
+
+% % \RequirePackage{stfloats}  % Control the presentation of floats
+% % \RequirePackage{framed}  % Create framed, shaded, or differently highlighted regions that can break across pages
+% \RequirePackage{multirow}  % Create tabular cells spanning multiple rows
+% \RequirePackage{siunitx}  % Package to properly typeset SI units, e.g. \SI{1}{\ohm}
+% \RequirePackage{placeins}  % Controls float placements by defining a \FloatBarrier command
+% % \RequirePackage{xparse}  % Provides a high-level interface for producing document level commands.
+% \RequirePackage{mathrsfs}  % Raph Smith's Formal Script (\mathsrc{})
+% \RequirePackage{cancel}  % \cancel{}
+% \RequirePackage{algpseudocode}  % Algorithm layout
+
+
+% % ====== Custom text-mode commands ========================================== %
+
+% % Latin phrases
+% \newcommand{\etal}[0]{{\emph{et~al.}\@}\xspace}
+% % English abbreviations
+% \@ifundefined{eg}{
+%     \newcommand{\eg}[0]{{e.g.\@}\xspace}
+% }{}
+% \@ifundefined{ie}{
+%     \newcommand{\ie}[0]{{i.e.\@}\xspace}
+% }{}
+% \@ifundefined{wrt}{
+%     \newcommand{\wrt}[0]{{w.r.t.\@}\xspace}
+% }{}
+% % Other custom commands.
+% % TODO I don't love these
+% \newcommand{\ignore}[1]{}
+% \newcommand{\colour}[2]{\color{#1}{#2}\color{black}\xspace} % : red, green, blue, cyan, magenta, yellow, black, gray, white, darkgray, lightgray, brown, lime, olive, orange, pink, purple, teal, violet.
+% \newcommand{\thline}{\begin{center} \rule{\linewidth}{0.5mm} \\ \end{center}}
+
+
+% % More compact enumerate and itemize environments
+% \newenvironment{packed_enum}{
+%     \begin{enumerate}[leftmargin=2\parindent]
+%         \setlength{\itemsep}{1pt}
+%         \setlength{\parskip}{0pt}
+%         \setlength{\parsep}{0pt}
+%     }{\end{enumerate}}
+% \newenvironment{packed_itemize}{
+%     \begin{itemize}[leftmargin=2\parindent]
+%         \setlength{\itemsep}{1pt}
+%         \setlength{\parskip}{0pt}
+%         \setlength{\parsep}{0pt}
+%     }{\end{itemize}}
+
+% % ====== Custom math-mode commands ========================================== %
+
+% % TODO Which of these styles are used? What are they used for?
+% % TODO With a proper setup, mbf and mbs should be the same command
+
+% % Mathcal font
+% \newcommand{\mc}[1]{\ensuremath{\mathcal{#1}}}
+% % Mathfrak font
+% \newcommand{\mf}[1]{\ensuremath{\mathfrak{#1}}}
+% % Bold Mathcal font
+% \newcommand{\mbc}[1]{\ensuremath{\boldsymbol{\mathcal{#1}}}}
+% % Bold upright Latin alphabet in a Times font
+% % TODO Change to a better Times font
+% \DeclareMathAlphabet{\mbf}{OT1}{ptm}{b}{n}
+% % Bold Greek alphabet
+% % TODO Change to Times to match mbf
+% \newcommand{\mbs}[1]{\ensuremath{\boldsymbol{#1}}}
+% % Bold, italicized math font
+% % TODO Times or Computer Modern?
+% \newcommand{\mbm}[1]{\ensuremath{\textbf{\textit{#1}}}}
+% % Helpers for bold upright Latin alphabet
+% \newcommand{\mbfdot}[1]{\ensuremath{\dot{\mbf{#1}}}}
+% \newcommand{\mbfbar}[1]{\ensuremath{\bar{\mbf{#1}}}}
+% \newcommand{\mbfhat}[1]{\ensuremath{\hat{\mbf{#1}}}}
+% \newcommand{\mbfcheck}[1]{\ensuremath{\check{\mbf{#1}}}}
+% \newcommand{\mbfvec}[1]{\ensuremath{\underrightarrow{\mbf{#1}}}}
+% \newcommand{\mbfdel}[1]{\ensuremath{\delta{\mbf{#1}}}}
+% \newcommand{\mbftilde}[1]{\ensuremath{\tilde{\mbf{#1}}}}
+% % Helpers for bold Greek alphabet
+% \newcommand{\mbsdot}[1]{\ensuremath{\dot{\boldsymbol{#1}}}}
+% \newcommand{\mbsbar}[1]{\ensuremath{\bar{\boldsymbol{#1}}}}
+% \newcommand{\mbshat}[1]{\ensuremath{\hat{\boldsymbol{#1}}}}
+% \newcommand{\mbscheck}[1]{\ensuremath{\check{\boldsymbol{#1}}}}
+% \newcommand{\mbsvec}[1]{\ensuremath{\underrightarrow{\boldsymbol{#1}}}}
+% \newcommand{\mbsdel}[1]{\ensuremath{\delta{\boldsymbol{#1}}}}
+% \newcommand{\mbstilde}[1]{\ensuremath{\tilde{\boldsymbol{#1}}}}
+% % Norm
+% \newcommand{\norm}[1]{\ensuremath{\left\Vert#1\right\Vert}}
+% % Absolute value
+% \newcommand{\abs}[1]{\ensuremath{\left\vert#1\right\vert}}
+% % Inner product
+% \newcommand{\innerp}[2]{\left\langle #1 , #2 \right\rangle}
+% % Under right arrow
+% \newcommand{\ura}[1]{{\underrightarrow{{#1}}}}
+% % Mathcal L
+% % TODO What is this actually for? L_2 signals?
+% \newcommand{\mcL}[1]{\mathcal{L}\left\{#1\right\}}
+% % Underbar
+% \newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+% % Transpose
+% \newcommand{\trans}{{\ensuremath{\mathsf{T}}}}
+% % Hermitian transpose
+% \newcommand{\herm}{{\ensuremath{\mathsf{H}}}}
+% % Partial derivative
+% \newcommand{\pd}[2]{\ensuremath{\frac{\partial #1}{\partial #2}}}
+% % Partial
+% \newcommand{\p}{\partial}
+% % Differential t
+% % TODO Why does this use \mathrm{} while \dee uses \textrm{}?
+% \newcommand{\dt}{\mathrm{d}t}
+% % Differential
+% % TODO Why does this use \textrm{} while \dt uses \mathrm{}?
+% \newcommand{\dee}{\textrm{d}}
+% % Trace
+% \DeclareMathOperator{\trace}{tr}
+% % Rank
+% \DeclareMathOperator{\rk}{rk}
+% % Cone
+% \DeclareMathOperator{\cone}{cone}
+% % Fraction
+% \newcommand{\f}{\frac}
+% % A half
+% \newcommand{\onehalf}{\mbox{$\textstyle{\frac{1}{2}}$}}
+% % A quarter
+% \newcommand{\onequarter}{\mbox{$\textstyle{\frac{1}{4}}$}}
+% % One over two pi
+% \newcommand{\invtwopi}{\mbox{$\textstyle{\frac{1}{2 \pi}}$}}
+% % Small fraction
+% \newcommand{\smallf}[2]{\mbox{$\textstyle{\frac{#1}{#2}}$}}
+% % TODO What is this?
+% \newcommand{\utimes}{{\raisebox{-0.6ex}{\kern-1.0ex\raisebox{0.6ex}{\small$\mathsf{v}$}}}}
+% % Fourier and Laplace transforms
+% \newcommand{\fouriert}[1]{\texttt{F} \left\{ {#1} \right\}}
+% \newcommand{\invfouriert}[1]{\texttt{F}^{-1} \left\{ {#1} \right\}}
+% \newcommand{\laplacet}[1]{\texttt{L} \left\{ {#1} \right\}}
+% \newcommand{\invlaplacet}[1]{\texttt{L}^{-1} \left\{ {#1} \right\}}
+% % Expected value
+% \newcommand{\expect}[1]{\mathrm{E}[#1]}
+% % Variance
+% \newcommand{\var}[1]{\operatorname{Var}[#1]}
+% % Covariance
+% \newcommand{\cov}[1]{\operatorname{Cov}[#1]}
+% % Real numbers
+% \newcommand{\rnums}{\mathbb{R}}
+% % Complex numbers
+% \newcommand{\cnums}{\mathbb{C}}
+% % Identity matrix
+% \newcommand{\eye}{\mbf{1}}
+% % Inverse
+% \newcommand{\inv}{^{-1}}
+% % Frobenius norm
+% \newcommand{\fnorm}[1]{\norm{#1}_\mathsf{F}}
+% % Arg. max
+% \DeclareMathOperator*{\argmax}{arg\,max}
+% % Arg. min
+% \DeclareMathOperator*{\argmin}{arg\,min}
+% % Superscript j. 'j' has weird spacing in superscripts
+% \newcommand{\pj}{{\,j}}
+% % Double left and right angle brackets
+% \newcommand{\dlangle}{\langle \langle}
+% \newcommand{\drangle}{\rangle \rangle}
+
+% % Matrices
+% % TODO Is this the wrong way to make a matrix?
+% \newcommand{\bma}[1]{\left[\begin{array}{#1}}
+% \newcommand{\ema}{\end{array}\right]}
+% \newcommand{\bbm}{\begin{bmatrix}}
+% \newcommand{\ebm}{\end{bmatrix}}
+% % Shortcuts for equation, displaymath, eqnarray.
+% % TODO None of these should be used, right? At least not eqnarray...
+% \newcommand{\beq}{\begin{equation}}
+% \newcommand{\eeq}{\end{equation}}
+% \newcommand{\bdis}{\begin{displaymath}}
+% \newcommand{\edis}{\end{displaymath}}
+% \newcommand{\beqarray}{\begin{eqnarray}}
+% \newcommand{\eeqarray}{\end{eqnarray}}
+% \newcommand{\beqarraynn}{\begin{eqnarray*}}
+% \newcommand{\eeqarraynn}{\end{eqnarray*}}
+
+% % Only load theorems and modify enums if document class is `decar-wsd`, not
+% % `decar-pres`.
+% \makeatletter
+% \@ifclassloaded{decar-pres} {
+%     % Do nothing
+% }{
+%     % Theorems
+%     \theoremstyle{definition} % This causes the text to be roman text
+%     \newtheorem{theorem}{Theorem}[section] % [section] % [chapter]
+%     \newtheorem{lemma}{Lemma}[section] % [section]
+%     \newtheorem{proposition}{Proposition}[section] % [section]
+%     \newtheorem{corollary}{Corollary}[section] % [section]
+%     \newtheorem{example}{Example}[section] % [section]
+%     \newtheorem{definition}{Definition}[section] % [section]
+%     \newtheorem{remark}{Remark}[section] % [section]
+%     \newtheorem{property}{Property}[section] % [section]
+%     \newtheorem{falgorithm}{Algorithm}[section] % [section]
+%     % TODO What is this for?
+%     \renewcommand{\theenumii}{\arabic{enumii}}
+%     \renewcommand{\labelenumii}{\theenumi.\theenumii.}
+%     \makeatletter
+%     \renewcommand{\p@enumii}{\theenumi.}
+%     \makeatother
+%     % \renewcommand{\labelenumi}{\arabic{enumi}.}
+%     % \renewcommand{\labelenumii}{\labelenumi\arabic{enumii}}
+%     % \renewcommand{\labelenumiii}{\labelenumii.\arabic{enumiii}}
+% }
+% \makeatother
+
+% % Computer code
+% \newcommand{\code}[1]{\texttt{#1}}
+% % Environment for printing lines of code
+% \definecolor{codegreen}{rgb}{0,0.6,0}
+% \definecolor{codegray}{rgb}{0.5,0.5,0.5}
+% \definecolor{codepurple}{rgb}{0.58,0,0.82}
+% \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+% % TODO: Make this accep and optional width argument.
+% % See:https://tex.stackexchange.com/questions/83614/set-horizontal-width-on-custom-listings-environment
+% \lstdefinestyle{mystyle}{
+%     backgroundcolor=\color{backcolour},
+%     commentstyle=\color{codegreen},
+%     keywordstyle=\color{magenta},
+%     numberstyle=\tiny\color{codegray},
+%     stringstyle=\color{codepurple},
+%     basicstyle=\footnotesize,
+%     breakatwhitespace=false,
+%     breaklines=true,
+%     captionpos=b,
+%     keepspaces=true,
+%     numbers=left,
+%     numbersep=5pt,
+%     showspaces=false,
+%     showstringspaces=false,
+%     showtabs=false,
+%     tabsize=2
+% }
+% \lstset{style=mystyle}
+
+% <--------------------------------------- Called in decar-common.sty package
+
+% Called in decar-dynamics.sty package ---------------------------------------->
+\usepackage{decar-dynamics}
+
+% % Reference frame
+% \newcommand{\rframe}[1]{{\ensuremath{\underrightarrow{\mathcal{F}}_{#1}}}}
+% % Vectrix
+% \newcommand{\vectrix}[1]{\ensuremath{\underrightarrow{\boldsymbol{\mathcal{F}}}_{#1}}}
+% % Null vectrix
+% \newcommand{\nvectrix}{{\ensuremath{\underrightarrow{\boldsymbol{\mathcal{O}}}}}}
+% % Time derivatives of physical vectors
+% % TODO Why are these such a mess?
+% \def\fdota{{\raisebox{-2pt}{\LARGE $\cdot$}}}
+% \def\fdotb{{\raisebox{-0.6ex}{\kern0.2ex\raisebox{0.8ex}{\tiny $\hspace*{-1ex}\circ$}}}}
+% \def\fddota{{\raisebox{-2pt}{\LARGE $\cdot\hspace*{-0.2ex}\cdot$}}}
+% \def\fddotb{{\raisebox{-0.6ex}{ \kern0.2ex\raisebox{0.8ex}{\tiny $\hspace*{-1ex}\circ\circ$}}}}
+% \newcommand{\fdot}[1]{{^{\fdota{\mbox{\scriptsize${#1}$}}}}}
+% \newcommand{\fddot}[1]{{^{\fddota{\mbox{\scriptsize${#1}$}}}}}
+% % Physical space
+% \newcommand{\pspace}{\mathbb{P}}
+% % Physical vector norm
+% \newcommand{\vecnorm}[1]{||{\underrightarrow{{#1}}}||_2}
+
+% % Displacements (r)
+% \newcommand{\dispspace}{\,}
+% % Basic displacement
+% \NewDocumentCommand{\disp}{ O{} O{} }{\mbf{r}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\dispspace} #1 \ifthenelse{\equal{#1}{}}{}{\dispspace}}}
+% % Mean displacement
+% \NewDocumentCommand{\dispbar}{ O{} O{}}{\mbfbar{r}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\dispspace} #1 \ifthenelse{\equal{#1}{}}{}{\dispspace}}}
+% % Prior displacement
+% \NewDocumentCommand{\dispcheck}{ O{} O{} }{\mbfcheck{r}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\dispspace} #1 \ifthenelse{\equal{#1}{}}{}{\dispspace}}}
+% % Posterior displacement
+% \NewDocumentCommand{\disphat}{ O{} O{} }{\mbfhat{r}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\dispspace} #1 \ifthenelse{\equal{#1}{}}{}{\dispspace}}}
+% % Derivative of displacement
+% \NewDocumentCommand{\dispdot}{ O{} O{} }{\mbfdot{r}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\dispspace} #1 \ifthenelse{\equal{#1}{}}{}{\dispspace}}}
+
+% % Basic covariance (P)
+% \newcommand{\covspace}{\,}
+% \NewDocumentCommand{\Pcov}{ O{} O{} }{\mbf{P}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\covspace} #1 \ifthenelse{\equal{#1}{}}{}{\covspace}}}
+% % Prior covariance
+% \NewDocumentCommand{\Pcovcheck}{ O{} O{} }{\mbfcheck{P}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\covspace} #1 \ifthenelse{\equal{#1}{}}{}{\covspace}}}
+% % Posterior covariance
+% \NewDocumentCommand{\Pcovhat}{ O{} O{} }{\mbfhat{P}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\covspace} #1 \ifthenelse{\equal{#1}{}}{}{\covspace}}}
+
+% % ====== Commented-out garbage ============================================== %
+
+% % \def\dota{{\raisebox{-2pt}{\LARGE $\cdot$}}}
+% % \def\dotb{{\raisebox{-0.6ex}{ \kern0.2ex\raisebox{0.8ex}{\tiny $\circ$}}}}
+% % \def\ddota{{\raisebox{-0.6ex}{ \raise0.2ex\hbox{ \LARGE $\cdot\hspace*{-0.2ex}\cdot$}}}}
+% % \def\ddotb{{\raisebox{-0.6ex}{ \kern0.2ex\raisebox{0.8ex}{\tiny $\circ\circ$}}}}
+% % \def\fdotb{{\raisebox{-0.6ex}{ \kern0.2ex\raisebox{0.8ex}{\tiny $\circ$}}}}
+% % \def\fddota{{\raisebox{-0.6ex}{ \raise0.2ex\hbox{ \LARGE $\cdot\hspace*{-0.2ex}\cdot$}}}}
+% % \def\fddotb{{\raisebox{-0.6ex}{ \kern0.2ex\raisebox{0.8ex}{\tiny $\circ\circ$}}}}
+% % \newcommand{\fdot}[1]{{\fdota{#1}}}
+% % \newcommand{\dota}[1]{ {#1}^{ \mbox{ \LARGE $\cdot$} } }
+% % \newcommand{\fdot}[1]{{^{\fdota{\mbox{\footnotesize${#1}$}}}}}
+% % \newcommand{\fddot}[1]{{^{\fddota{\mbox{\footnotesize${#1}$}}}}}
+
+% <--------------------------------------- Called in decar-dynamics.sty package
+
+% Called in decar-lie.sty package ---------------------------------------->
+\usepackage{decar-lie}
+% %% LIE GROUPS
+% % SO(N).  Displays in \mathnormal{} regardless of text or math mode.  E.g. \SO3.
+% \newcommand{\SO}[1]{\ifmmode SO(#1) \else $SO(#1)$ \fi}
+% % SE(N).  Displays in \mathnormal{} regardless of text or math mode.  E.g. \SE3.
+% \newcommand{\SE}[1]{\ifmmode SE(#1) \else $SE(#1)$ \fi}
+
+% %% LIE ALGEBRAS
+% % so(N).  Displays in \mathfrak{} regardless of text or math mode.  E.g. so3.
+% \newcommand{\so}[1]{\ifmmode \mathfrak{so}(#1) \else $\mathfrak{so}(#1)$ \fi}
+% % se(N).  Displays in \mathfrak{} regardless of text or math mode.  E.g. se3.
+% \newcommand{\se}[1]{\ifmmode \mathfrak{se}(#1) \else $\mathfrak{se}(#1)$ \fi}
+
+% %% ADJOINTS
+% % Adjoint operator for group elements.  E.g. \adj{\mbs{\xi}}.  
+% \newcommand{\adjspace}{\hspace{0.1em}}
+% % Adjoint for elements of the Lie algebra
+% \newcommand{\adj}[1]{\operatorname{adj}_{#1}}
+% % Adjoint for elements of the Lie group
+% \newcommand{\Adj}[1]{\operatorname{Adj}_{#1}}
+
+% %% LIE ALBEGRA OPERATORS
+% % To represent an element of \mathbb{R}^d as an element of the Lie algebra.  E.g. \mbf{r}\expand
+% \newcommand{\expand}{^\wedge \hspace{0.1em}}
+% % To represent an element of the Lie algebra as an element of \mathbb{R}^d.  E.g. \mbs{\xi}\contract
+% \newcommand{\contract}{^\vee}
+% % Cross operator (expansion operator for SO(3)).  E.g. \omega \cross
+% \newcommand{\crossop}{^\times}
+
+% %% LIE ALBEGRA ELEMENTS
+% %% GROUP ELEMENTS OF SO(3) (DCMs)
+% % Note: The optional argument represents a subscript on the DCM.  E.g. \dcm[ba].
+% % Note: If a subscript is present, insert a \dcmsmace between the DCM and the next character.
+% \newcommand{\dcmspace}{\hspace{0.1em}}
+% % Basic DCM
+% \NewDocumentCommand{\dcm}{ O{} }{\mbf{C}_{#1} {\ifthenelse{\equal{#1}{}}{}{\dcmspace}}}
+% % Mean DCM
+% \NewDocumentCommand{\dcmbar}{ O{} }{\mbfbar{C}_{#1} {\ifthenelse{\equal{#1}{}}{}{\dcmspace}}}
+% % Prior DCM
+% \NewDocumentCommand{\dcmcheck}{ O{} }{\mbfcheck{C}_{#1} {\ifthenelse{\equal{#1}{}}{}{\dcmspace}}}
+% % Posterior DCM
+% \NewDocumentCommand{\dcmhat}{ O{} }{\mbfhat{C}_{#1} {\ifthenelse{\equal{#1}{}}{}{\dcmspace}}}
+% % Derivative of DCM
+% \NewDocumentCommand{\dcmdot}{ O{} }{\mbfdot{C}_{#1} {\ifthenelse{\equal{#1}{}}{}{\dcmspace}}}
+
+% %% GROUP ELEMENTS OF SE(3) (poses)
+% % Note: There are two optional arguments.  The first represents a superscript on the pose, the second represents a subscript.  E.g. \pose[hg][ef]. 
+% % Note: If a superscript is present, insert a \posespace between the superscript and the pose, and the superscript and the next character. 
+% \newcommand{\posespace}{\,}
+% % Basic pose
+% \NewDocumentCommand{\pose}{ O{} O{} }{\mbf{T}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\posespace} #1 \ifthenelse{\equal{#1}{}}{}{\posespace}}}
+% % Mean pose
+% \NewDocumentCommand{\posebar}{ O{} O{}}{\mbfbar{T}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\posespace} #1 \ifthenelse{\equal{#1}{}}{}{\posespace}}}
+% % Prior pose
+% \NewDocumentCommand{\posecheck}{ O{} O{} }{\mbfcheck{T}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\posespace} #1 \ifthenelse{\equal{#1}{}}{}{\posespace}}}
+% % Posterior pose
+% \NewDocumentCommand{\posehat}{ O{} O{} }{\mbfhat{T}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\posespace} #1 \ifthenelse{\equal{#1}{}}{}{\posespace}}}
+% % Derivative of pose
+% \NewDocumentCommand{\posedot}{ O{} O{} }{\mbfdot{T}_{#2}^{\ifthenelse{\equal{#1}{}}{}{\posespace} #1 \ifthenelse{\equal{#1}{}}{}{\posespace}}}
+
+% <--------------------------------------- Called in decar-lie.sty package
+
+
+\usepackage[french,english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{stylesheets/rac}         % Use Rackham thesis style file
+\usepackage{stylesheets/aas_macros}  % To allow the reading of ADS journal references in the bibliography
+\usepackage{esint}
+\usepackage{amsxtra}     % Use various AMS packages
+\usepackage{amsfonts}
+\usepackage{rotating}
+\usepackage{color}
+\usepackage{epsfig}
+\usepackage{verbatim}
+\usepackage{hhline}
+\usepackage{setspace}    % Allows you to specify the line spacing
+\usepackage{epsfig}
+\usepackage{caption}
+% Citation: Use either natbib or biblatex
+% \usepackage[square,numbers]{natbib}
+
+
+%\usepackage{appendix}
+% \usepackage{hyperref} \hypersetup{debug=true, backref=true, letterpaper=true, colorlinks=true, bookmarks, linkcolor=blue, citecolor=blue,urlcolor=black}
+% \usepackage[colorlinks,citecolor=blue,linkcolor=blue, linktocpage=true]{hyperref}
+\usepackage[
+  colorlinks,
+  citecolor=black,
+  linkcolor=black,
+  linktocpage=true,
+  linktoc=all]
+    {hyperref}
+% \usepackage[pdftex,colorlinks]{hyperref}
+\usepackage{bookmark}	 % Create the bookmarks in the page automatically
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+% Fix for underrightarrow in a caption
+\usepackage{balance}
+\usepackage{algorithm}
+\usepackage{marginnote}
+
+% landsape
+\usepackage{lscape}
+
+\usepackage{pgfplots}
+\usepackage{enumitem}
+
+% // Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Options
+% Spacing:
+%   1.5 spacing:    \onehalfspacing, or
+%   Double spacing: \doublespacing
+\onehalfspacing
+
+% Caption format
+\DeclareCaptionFormat{citation}{%
+   \ifx\captioncitation\relax\relax\else
+     \captioncitation\par
+   \fi
+   #1#2#3\par}
+\newcommand*\setcaptioncitation[1]{\def\captioncitation{\textit{Source:}~#1}}
+\let\captioncitation\relax
+\captionsetup{format=citation,justification=centering}
+\MakeRobust{\underrightarrow}
+
+\makeatletter
+\def\BState{\State\hskip-\ALG@thistlm}
+\makeatother
+
+\renewcommand{\thealgorithm}{\arabic{chapter}.\arabic{algorithm}}
+% TODO: Remove
+% % and optionally (as of Pgfplots 1.3):
+% \pgfplotsset{compat=newest}
+% \pgfplotsset{plot coordinates/math parser=false}
+% %\usetikzlibrary{plotmarks}
+\newlength\figureheight
+\newlength\figurewidth
+
+% // Options
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Commands
+% TODO: Remove
+\newcommand{\sun}{\ensuremath{\odot}} % sun symbol is \sun
+
+% Number equations within sections
+%\numberwithin{equation}{section}
+
+% Custom commands
+\newcommand{\hilight}[1]{\colorbox{yellow}{#1}}
+\newcommand{\matlab}[0]{{\textsc{matlab}\@}\xspace}
+\long\def\isdef{\mathrel{\mathop{\smash{=}}\limits^{\hbox{\raisebox{.7ex}{\small$\scriptstyle\triangle
+$}}}}}
+
+% Operators
+\newcommand{\norms}[1]{\|#1\|} % Small
+\newcommand{\pdd}[2]{{\frac{\partial^2 #1}{\partial #2^2}}} % Partial derivative
+\newcommand{\dd}[2]{{\frac{\dee #1}{\dee #2}}} % Partial derivative
+
+% TODO: Remove
+% \newcommand{\dcm}[1]{\mbf{C}_{#1}} % DCM
+\renewcommand{\dcm}[1]{\mbf{C}_{#1}} % DCM
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\mymargin}[1]{\marginnote{{\footnotesize #1}}\index{#1}}
+
+% helper bold symbols
+% helper bold symbols
+\newcommand{\mbsch}[1]{\check{\mbs{#1}}}
+\newcommand{\mbfch}[1]{\check{\mbf{#1}}}
+\newcommand{\expmapw}[1]{\exp\left(#1^\wedge\right)}
+\newcommand{\op}{\mathrm{op}}
+
+% A coordinate frame definintion
+\newcommand{\vect}{\underrightarrow}
+\newcommand{\vectrixT}[1]{{\ensuremath \underrightarrow{\boldsymbol{\mathcal{F}}}^{\ensuremath{\mathsf{T}}}_{#1}}}
+
+\newcommand{\ket}[1]{\left\langle #1 \right\rangle}
+
+\newenvironment{packedEnum}{
+\begin{enumerate}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{enumerate}}
+
+\newenvironment{packedItemize}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{itemize}}
+
+%% Colors
+\newcommand{\green}{\textcolor{green}}
+\newcommand{\red}{\textcolor{red}}
+\newcommand{\blue}{\textcolor{blue}}
+\newcommand{\yellow}{\textcolor{yellow}}
+\newcommand{\purple}{\textcolor{purple}}
+\newcommand{\orange}{\textcolor{orange}}
+\newcommand{\magenta}{\textcolor{magenta}}
+
+%% Custom Environments such as Theorems, Lemmas, etc.
+%\theoremstyle{definition} % This causes the text to be normal text, rather then italic
+% \newtheorem{theorem}{Theorem} % [chapter]
+% \newtheorem{lemma}{Lemma}
+%\newtheorem{proposition}{Proposition}[section]
+% \newtheorem{corollary}{Corollary}
+%\newtheorem{example}{Example}[section]
+%\newtheorem{definition}{Definition}[section]
+%%\newtheorem{remark}{Remark}[section]
+%\newtheorem{remark}{Remark}
+%\newtheorem{property}{Property}[section]
+
+ % \newcommand{\proof}{\begin{IEEEproof}}
+ % \newcommand{\qed}{\end{IEEEproof}}
+
+% Change caption to have small caps for tables
+%\captionsetup[table]{textfont={sc}}
+%\captionsetup[table]{labelsep=newline}
+
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20,
+    text width=4.5em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{block_end} = [rectangle, draw, fill=red!20,
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{line} = [draw, -latex',decoration={markings,mark=at position 1 with
+    {\arrow[scale=1.3,>=triangle 45]{>}}},postaction={decorate}]
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+
+
+\tikzstyle{block_bd} = [draw, rectangle,
+    minimum height=2em, minimum width=3em]
+\tikzstyle{sum} = [draw, circle, node distance=5mm,,inner sep=3pt]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+
+
+\tikzset{
+  basic box/.style = {
+    shape = rectangle,
+    align = center,
+    draw  = #1,
+    fill  = #1!25,
+    rounded corners},
+  header node/.style = {
+    Minimum Width = header nodes,
+    font          = \strut\Large\ttfamily,
+    text depth    = +0pt,
+    fill          = white,
+    draw},
+  header/.style = {%
+    inner ysep = +1.5em,
+    append after command = {
+      \pgfextra{\let\TikZlastnode\tikzlastnode}
+      node [header node] (header-\TikZlastnode) at (\TikZlastnode.north) {#1}
+      node [span = (\TikZlastnode)(header-\TikZlastnode)]
+        at (fit bounding box) (h-\TikZlastnode) {}
+    }
+  },
+  hv/.style = {to path = {-|(\tikztotarget)\tikztonodes}},
+  vh/.style = {to path = {|-(\tikztotarget)\tikztonodes}},
+  fat blue line/.style = {ultra thick, blue}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Various theorem environments. All of the following have the same numbering
+% system as theorem.
+
+\theoremstyle{definition}
+% \newtheorem{theorem}{Theorem}
+% \newtheorem{definition}[theorem]{Definition}
+\newtheorem{notation}[theorem]{Notation}
+\newtheorem{condition}[theorem]{Condition}
+% \newtheorem{example}[theorem]{Example}
+\newtheorem{introduction}[theorem]{Introduction}
+\newtheorem{problem}[theorem]{Problem}
+
+
+% \theoremstyle{remark}
+% \newtheorem{remark}[theorem]{Remark}

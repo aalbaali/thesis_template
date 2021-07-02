@@ -1,0 +1,235 @@
+% The packages used here are just a sample. You may need others, and may not need some of these. It doesn't hurt to leave them in, unless they start to conflict with other packages you've added. Chapter 2 has example code for equations, figures, tables, citations, abbreviations, etc. If there are sections labeled 'optional' that you don't want, just comment them out. -jg
+
+\documentclass[reqno,12pt,oneside]{report} % right-side a equation numbering, 12 point font, print one-sided 
+%\documentclass[reqno,12pt,twoside,openright]{report} % right-side equation numbering, 12 point font, print two-sided, Chapters start on odd pages. Rackham only accepts one-sided, so this is for personal printings.
+% \usepackage{tocloft}
+\usepackage{stylesheets/thesis_style}
+% \usepackage{stylesheets/rac}         % Use Rackham thesis style file
+% \usepackage{stylesheets/aas_macros}  % To allow the reading of ADS journal references in the bibliography
+\addbibresource{refs}
+
+\newcommand{\myTitle}{
+  Practical Considerations and Extensions of the Invariant Extended Kalman Filtering Framework
+  }
+
+\title{HIII}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\selectlanguage{english} 
+% \bibliographystyle{agu04}    % Set the bibliography style. agu04, plain, alpha, etc.
+
+% Title page as required by Rackham dissertation guidelines
+\titlepage{\myTitle}{Jonathan Arsenault}{Department of Mechanical Engineering}{Master of Engineering}
+{Professor James Richard Forbes}
+
+% Begin the front matter as required by Rackham dissertation guidelines
+\initializefrontsections
+
+% Optional Frontispiece
+% \frontispiece{
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=\textwidth]{figs/attributesScience.jpg} 
+% \end{figure}
+% \hfill \emph{The Attributes of Science} -- Jean-Baptiste-Sim\'{e}on Chardin, 1731}
+
+% \frontispiece{
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=\textwidth]{figs/formationSnowbirds.jpg} 
+% \end{figure}
+% \hfill Snowbirds in formation flight -- a challenging guidance and control problem~\cite{SnowBirdFormation}.}
+
+
+
+% \includegraphics[width=6in]{figs/attributesScience.jpg} 
+%     \emph{The Attributes of Science} -- Jean-Baptiste-Sim\'{e}on Chardin, 1731}
+
+% Optional, but recommended, Copyright page
+
+\cleardoublepage
+\copyrightpage{Jonathan Arsenault}
+
+% \copyrightpageTwo
+
+% Page numbering. If you don't include a frontispiece or copyright page, you'll need to change this for two-sided printing.
+\makeatletter
+\if@twoside \setcounter{page}{4} \else \setcounter{page}{2} \fi
+\makeatother
+ 
+% Optional Dedication page
+%\dedicationpage{To my family for their steadfast support and love.}
+
+\startabstractpage
+{\myTitle}{Jonathan Arsenault}{Supervisor: James Richard Forbes}
+\input{abstract}
+\label{AbstractEn}
+
+% Optional Acknowledgements page
+ \startacknowledgementspage
+\input{ack}
+\label{acknowledgements}
+
+% Optional Preface page
+\startprefacepage
+\input{preface}
+\label{preface}
+
+% Table of contents, list of figures, etc.
+\cleardoublepage
+\pdfbookmark{\contentsname}{toc}
+\tableofcontents     % Required
+\cleardoublepage
+% \phantomsection
+% \addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures       % Required if there is more than one figure
+\cleardoublepage
+% \phantomsection
+\listoftables        % Required if there is more than one table
+% \addcontentsline{toc}{chapter}{List of Tables}
+
+%\listofmaps          % Required if there is more than one map
+\cleardoublepage
+
+%\listofappendices    % Required if there is more than one appendix
+\cleardoublepage
+
+% \listofabbreviations % Optional. Abbreviations should be stored in a file named abbr.tex
+% \cleardoublepage
+
+% \listofsymbols       % Optional. Abbreviations should be stored in a file named abbr.tex
+
+\cleardoublepage
+% Optional in-dissertation Abstract Page
+
+% -- ...always begin with ii.
+\cleardoublepage
+\setcounter{page}{1}
+\renewcommand{\thepage}{\arabic{page}}
+
+% \addtocontents{toc}{\protect\mbox{ }\protect\newline\noindent{\large\bf Part}\protect\newline}
+
+\cleardoublepage
+%\part{Introduction}
+
+
+\startthechapters 
+% The individual files for each of the chapters are put here.
+% Save each chapter of your thesis to a seperate tex file
+% and then use the \input command to include this file in your
+% thesis.  For instance you can save a file to "intro.tex" and 
+% then type \input{intro}. 
+
+% Change header line to Michigan blue
+% \definecolor{mblue}{HTML}{00274C}
+% \renewcommand{\headrulewidth}{0.5pt}
+% \renewcommand{\headrule}{\hbox to\headwidth{\color{mblue}\leaders\hrule height \headrulewidth\hfill}}
+% \renewcommand{\footrulewidth}{0.5pt}
+% \renewcommand{\footrule}{\hbox to\headwidth{\color{red}\leaders\hrule height \footrulewidth\hfill}}
+% \renewcommand{\chaptermark}[1]{ \markboth{#1}{} }
+% \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\chaptername\ \thechapter.\ #1}}{}}
+
+
+% Nice headers
+% \pagestyle{mine}
+
+
+% ------------------------------------------------------------
+  % \part{Introduction}
+
+\cleardoublepage
+    \chapter{Introduction}
+    \label{chap:Intro}
+    \input{sections/intro}
+    
+% \cleardoublepage
+%     \chapter{Preliminaries}
+%     \label{chap:preliminaries}
+%     \input{sections/preliminaries}
+
+% % ------------------------------------------------------------
+
+% \cleardoublepage
+%     \chapter{Invariant Extended Kalman Filtering}
+%     \label{chap:IEKF}
+%     \input{sections/IEKF}
+    
+% \cleardoublepage
+%     \chapter{Practical Implications of the IEKF}
+%     \label{chap:SE3}
+%     \input{sections/sample_problems_se3}
+    
+% \cleardoublepage
+%     \chapter{Invariant Batch SLAM}
+%     \label{chap:batch}
+%     \input{sections/batch}
+    
+%  ------------------------------------------------------------    
+\cleardoublepage
+  \chapter{Closing Remarks and Future Work}
+  \label{chap:conc}
+  \input{sections/conclusion}
+%  ------------------------------------------------------------
+% \startcontents
+% \phantomsection
+% \addcontentsline{toc}{part}{}%
+% \addtocontents{toc}{\protect\addvspace{2.25em plus 1pt}}
+
+
+% \bookmarksetupnext{level=-1}
+% \startappendices
+
+    %\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
+
+    % \bookmarksetupnext{rellevel=1}
+    % \appendix{Resulting Publications}
+    % \label{app:publications}
+    % % \pagestyle{appendix}
+    % \input{Appendices/listOfPapers}
+
+    % \pagestyle{mine}
+
+    %bookmarksetup{level=0}
+    % \appendix{Miscellaneous Polytopic Conic Controller Design}
+    %\cleardoublepage
+    %\appendix{Polytopic Conic Design with $\mbf{C}_{\textrm{c}}$ Matrix}
+    %\hypersetup{bookmarksdepth=-2}
+    % \addcontentsline{loa}{appendix}{\protect\numberline{\theappendix.}{\ignorespaces\rm #1}}
+    % \bookmarksetupnext{level=2}
+    %\label{app:conicSynthesis}
+    %\input{Appendices/conicSynthesis}
+    %\hypersetup{bookmarksdepth}
+%
+%    \bookmarksetup{level=1}
+%    \cleardoublepage
+%    \appendix{Miscellaneous Derivations}
+%    \hypersetup{bookmarksdepth=-2}
+%    \bookmarksetup{level=2}
+%    \label{app:derivations}
+%    % \input{Appendices/derivations} 
+%    \hypersetup{bookmarksdepth}
+% 
+
+\bookmarksetupnext{startatroot}
+
+\cleardoublepage
+%\startbibliography
+
+% \pagestyle{bib}
+
+
+ \begin{singlespace} % Bibliography must be single spaced
+	% \bibliographystyle{ieeetr}
+ 	% \bibliography{refs}   % Use the BibTeX file ``References.bib''.
+   \printbibliography
+ \end{singlespace}
+
+% An external Abstract that can be printed at the end of the document, 
+% for separate submission to Rackham. Comment it out when not needed. - jg
+% \startextabstractpage
+% {The Title of Your Dissertation}{Your Name}{Chair: Albert Einstein}
+% \input{Abstract/Abstract}
+% \label{ExtAbstract}
+
+\end{document}
