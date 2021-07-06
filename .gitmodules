@@ -1,0 +1,3 @@
+[submodule "stylesheets/decar_classes"]
+	path = stylesheets/decar_classes
+	url = git@github.com:aalbaa/latex_classes.git
