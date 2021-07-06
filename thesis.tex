@@ -107,17 +107,17 @@
 \dedicationpage{\emph{To my family for their steadfast support and love.}}
 
 \startabstractpage
-\input{abstract}
+\input{front_matter/abstract}
 \label{Abstract}
 
 % Optional Acknowledgements page
  \startacknowledgementspage
-\input{ack}
+\input{front_matter/acknowledgements}
 \label{acknowledgements}
 
 % Optional Preface page
 \startprefacepage
-\input{preface}
+\input{front_matter/preface}
 \label{preface}
 
 % Table of contents, list of figures, etc.
@@ -144,11 +144,11 @@
 \cleardoublepage
 
 % Optional. Abbreviations should be stored in a file named abbreviations.tex
-\listofabbreviations
+\listofabbreviations{front_matter/abbreviations}
 \cleardoublepage
 
 % Optional. Abbreviations should be stored in a file named symbols.tex
-\listofsymbols
+\listofsymbols{front_matter/symbols}
 
 \cleardoublepage
 % Optional in-dissertation Abstract Page

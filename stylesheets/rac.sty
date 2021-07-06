@@ -310,24 +310,24 @@
  \end{singlespace}
 }
 
-\def\listofabbreviations{% Uses the acronym package -jg
+\def\listofabbreviations#1{% Uses the acronym package -jg
  \newpage
  \phantomsection
  \addcontentsline{toc}{chapter}{List of Abbreviations}
  \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
  \hbox{ }
  \twoinmar
- \input{abbreviations}
+ \input{#1}
 }
 
-\def\listofsymbols{% Uses the acronym package -jg
+\def\listofsymbols#1{% Uses the acronym package -jg
  \newpage
  \phantomsection
  \addcontentsline{toc}{chapter}{List of Symbols}
  \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
  \hbox{ }
  \twoinmar
- \input{symbols}
+ \input{#1}
 }
 
 
