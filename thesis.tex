@@ -33,17 +33,21 @@
 %     can be included only if the student authorizes the reproduction of the
 %     thesis without them.
 %
-%   Following formatting guidelines from the article 
-%               "Writing a thesis with LaTeX" by Mori
-%           and the repository 
+%  Notes
+%   - Following formatting guidelines from the article "Writing a thesis with
+%               LaTeX" by Mori and the repository
 %               https://github.com/dspinellis/latex-advice
+%   - Use \cref or \Cref to reference labels (figures, equations, etc.)
+%   - Clean up the bibliography (.bib) file (e.g., using JabRef)
+%   - Use https://www.tablesgenerator.com/ to generate tables and use `Booktabs'
+%     tab style
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % right-side a equation numbering, 12 point font, print one-sided
 \documentclass[reqno, 12pt, onesidie]{report}
 % \usepackage{tocloft}
 \usepackage{stylesheets/thesis_style}
-\addbibresource{refs}
+\addbibresource{references}
 
 % Custom definitions
 \title      {Title Here}
@@ -123,7 +127,7 @@
 % Table of contents, list of figures, etc.
 \cleardoublepage
 \pdfbookmark{\contentsname}{toc}
-\tableofcontents     % Required
+\tableofcontents
 \cleardoublepage
 
 % \phantomsection
@@ -178,38 +182,31 @@
 
 \cleardoublepage
     \chapter{Introduction}
-    \label{chap:Intro}
-    \input{sections/intro}
+    \label{chap:Introduction}
+    \input{chapters/introduction}
 
 \cleardoublepage
     \chapter{Preliminaries}
     \label{chap:preliminaries}
-    \input{sections/preliminaries}
+    \input{chapters/preliminaries}
 
 % ------------------------------------------------------------
-
-\cleardoublepage
-    \chapter{Invariant Extended Kalman Filtering}
-    \label{chap:IEKF}
-    \input{sections/IEKF}
-
-\cleardoublepage
-    \chapter{Practical Implications of the IEKF}
-    \label{chap:SE3}
-    \input{sections/sample_problems_se3}
-
-\cleardoublepage
-    \chapter{Invariant Batch SLAM}
-    \label{chap:batch}
-    \input{sections/batch}
+% Main chapters
+% \cleardoublepage
+%     \chapter{Some chapter 1}
+%     \label{chap:some chapter 1}
+%     \input{chapters/some_chapter_1}
+%
+% \cleardoublepage
+%     \chapter{Some chapter 2}
+%     \label{chap:some chapter 2}
+%     \input{chapters/some_chapter_2}
 
 %  ------------------------------------------------------------
 \cleardoublepage
   \chapter{Closing Remarks and Future Work}
   \label{chap:conc}
-  \input{sections/conclusion}
-%  ------------------------------------------------------------
-
+  \input{chapters/conclusion}
 %   // Chapters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -226,18 +223,10 @@
 
 % \pagestyle{bib}
 
- \begin{singlespace} % Bibliography must be single spaced
-	% \bibliographystyle{ieeetr}
- 	% \bibliography{refs}   % Use the BibTeX file ``References.bib''.
+% Bibliography must be single spaced
+ \begin{singlespace}
    \printbibliography
  \end{singlespace}
-
-  % An external Abstract that can be printed at the end of the document,
-  % for separate submission to Rackham. Comment it out when not needed. - jg
-  % \startextabstractpage
-  % {The Title of Your Dissertation}{Your Name}{Chair: Albert Einstein}
-  % \input{Abstract/Abstract}
-  % \label{ExtAbstract}
 
  % // End matter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,594 @@
+
+\section{Matrix Lie Groups}
+
+In many robotics applications, the states are an element of a matrix Lie groups. Any navigation, guidance, or control algorithm should explicitly accommodate the matrix Lie group nature of the states. As such, matrix Lie group properties and theory will be introduced next. 
+
+\subsection{Overview}
+
+This summary of matrix Lie group theory is based on Section~2 of \cite{Eade2013}. A matrix Lie group $\mathcal{G}$, is composed of invertible $n \times n$ matrices that is closed under matrix multiplication. The matrix Lie algebra associated with $\mc{G}$, denoted $\mathfrak{g}$, is the tangent space around the identity of $\mathcal{G}$, denoted $T_\mbf{1}\mathcal{G}$. The tangent space of $\mc{G}$ at any $\mbf{X} \in \mathcal{G}$ is denoted $T_\mbf{X}\mathcal{G}$. The matrix Lie algebra is a vector space closed under the operation of the matrix Lie bracket defined $[\mbf{A},\mbf{B}] = \mbf{A}\mbf{B} - \mbf{B}\mbf{A}, \ \forall \mbf{A},\mbf{B} \in \mathfrak{g}$. Furthermore, $\mbf{X}\mbf{A}\mbf{X}^{-1}  \in \mathfrak{g}, \ \forall\mbf{X} \in \mc{G}, \ \forall \mbf{A} \in \mathfrak{g}$. Any $\mbf{A} \in \mathfrak{g}$ can be written as $\mbf{A} = \mbs{\xi}^\wedge = \sum_{i=1}^{n} \xi_i \mbf{B}_i$, where $\{\mbf{B}_1, \ldots ,\mbf{B}_n\}$ is a basis for $\mathfrak{g}$, also known as the generators, and $\mbf{A} = \left[\xi_1,\ldots,\xi_n\right]^\trans \in \mathbb{R}^n$ is the column matrix of coefficients associated with $\mbf{A}$. Alternatively, $\mbf{A}^\vee = \mbs{\xi}$.
+
+The exponential map takes elements in the Lie algebra and maps them to the Lie group. For matrix Lie groups, the exponential map is simply the matrix exponential. The inverse of the matrix exponential, the matrix logarithm, is also defined and maps elements of the matrix Lie group to the matrix Lie algebra. In more detail, 
+\bdis
+	\mbf{X} = \expmapw{\mbs{\xi}}
+\edis
+and
+\bdis
+	\mbs{\xi}^\wedge = \log(\mbf{X})
+\edis
+where $\mbf{X}~\in~\mathcal{G}$ and $\mbs{\xi}^\wedge \in \mathfrak{g}$.
+
+The matrix representation of the adjoint operator is used throughout this thesis. It is not unique, as it depends on the parametrization. Denoting the adjoint representation of $\mbf{X}$ as $\textrm{Ad}(\mbf{X})$, then 
+$\left(\textrm{Ad}(\mbf{X})\mbs{\xi}\right)^\wedge = \mbf{X}\mbs{\xi}^\wedge\mbf{X}^{-1}$. This leads to the useful identity
+\beq
+	\mbf{X}\exp(\mbs{\xi}^\wedge)\mbf{X}^{-1} = \exp\left(\left(\textrm{Ad}(\mbf{X})\mbs{\xi}\right)^\wedge\right) \label{eq:Ad_identity}.
+\eeq
+The adjoint representation of an element of the matrix Lie algebra can also be defined \cite{Barrau2017,Hall2014}. Given $\mbs{\xi}^\wedge,\mbs{\zeta}^\wedge \in \mathfrak{g}$, 
+the adjoint matrix satisfies  $\textrm{ad}(\mbs{\zeta}) \mbs{\xi} = -\textrm{ad}(\mbs{\xi})\mbs{\zeta}$ and
+\beq
+	\mbs{\xi}^\wedge\mbs{\zeta}^\wedge - \mbs{\zeta}^\wedge\mbs{\xi}^\wedge = \left(-\textrm{ad}(\mbs{\zeta}) \mbs{\xi}\right)^\wedge. \label{eq:ad_identity}
+\eeq
+
+\subsection{Uncertainty Representations}
+\label{ssec:uncertainty}
+In standard linear vector spaces, uncertainty is simply additive, such that $\mbf{x} = \mbfbar{x} + \mbfdel{x}$, where $\mbfdel{x} \sim \mathcal{N}(\mbf{0},\mbs{\Sigma})$. However, this is not applicable to matrix Lie groups, as they are not closed under addition. Rather, a multiplicative uncertainty must be used \cite{Barfoot2014}. This leads to two distinct options, namely
+\begin{align}
+	\mbf{X} &= \mbfbar{X}\expmapw{\mbsdel{\xi}}, \label{eq:left_unc}\\
+	\mbf{X} &= \expmapw{\mbsdel{\xi}}\mbfbar{X}, \label{eq:right_unc}
+\end{align}
+where $\mbsdel{\xi} \sim \mathcal{N}(\mbf{0},\mbs{\Sigma})$. Note that $\mbf{X}$ is not normally distributed. Two additional uncertainty definitions can also be defined. They are
+\begin{align}
+	\mbf{X} &= \mbfbar{X}\expmapw{-\mbsdel{\xi}},  \label{eq:left_inv_unc}\\
+	\mbf{X} &= \expmapw{-\mbsdel{\xi}}\mbfbar{X}, \label{eq:right_inv_unc}
+\end{align}
+defined as the left-invariant and right-invariant uncertainty representations, respectively. They are named as such as they are consistent with left and right-invariant error definitions, which are introduced in Chapter~\ref{chap:IEKF}.
+
+\subsection{The Baker-Campbell-Hausdorff Formula}
+
+The Baker-Campbell-Hausdorff (BCH) formula is the solution to the equation \cite{Barfoot2017}
+\bdis
+	\mbf{z}^\wedge = \log\left(\expmapw{\mbf{a}}\expmapw{\mbf{b}}\right).
+\edis
+The detailed solution is available in \cite[pp.~230-232]{Barfoot2017}. Herein only a first-order approximation is needed, that being
+\bdis
+	\log\left(\expmapw{\mbf{a}}\expmapw{\mbf{b}}\right) = \mbf{a}^\wedge + \mbf{b}^\wedge.
+\edis
+This is exact in the case that  $\left[\mbf{a}^\wedge,\mbf{b}^\wedge\right] = \mbf{0}$.
+
+\subsection{Linearization}
+
+Any element of a matrix Lie group can be expressed using the exponential map, which is in fact the  matrix exponential,
+\bdis
+	\mbf{X} = \expmapw{\mbs{\xi}}.
+\edis
+The matrix exponential itself is defined by a power series,
+\begin{align*}
+	\expmapw{\mbs{\xi}} &= \sum_{k=0}^\infty \f{1}{k!}(\mbs{\xi}^\wedge)^k \\
+	&= \mbf{1} + \mbs{\xi}^\wedge + \f{(\mbs{\xi}^\wedge)^2}{2} + \f{(\mbs{\xi}^\wedge)^3}{6} + \ldots
+\end{align*}
+Now, consider the case where $\mbs{\xi}$ can be considered small. This small element of $\mathbb{R}^d$ is denoted $\mbsdel{\xi}$ and $\mbfdel{X} = \expmapw{\mbsdel{\xi}}$. As $\mbsdel{\xi}$ is already considered small, it is common to assume that terms of order $\mathcal{O}(\norm{\mbsdel{\xi}}^2)$ can be neglected, leading to the approximation
+\bdis
+	\mbfdel{X} \approx \mbf{1} + \mbsdel{\xi}^\wedge.
+\edis
+Thus, the uncertainty representations \eqref{eq:left_unc} and \eqref{eq:right_unc} can be approximated as
+\begin{align*}
+	\mbf{X} &= \mbfbar{X}(\mbf{1} + \mbsdel{\xi}^\wedge), \\
+	\mbf{X} &= (\mbf{1} + \mbsdel{\xi}^\wedge)\mbfbar{X},
+\end{align*}
+respectively. Similarly for \eqref{eq:left_inv_unc} and \eqref{eq:right_inv_unc}, 
+\begin{align*}
+	\mbf{X} &= \mbfbar{X}(\mbf{1} - \mbsdel{\xi}^\wedge), \\
+	\mbf{X} &= (\mbf{1} - \mbsdel{\xi}^\wedge)\mbfbar{X}.
+\end{align*}
+
+\section{The Special Orthogonal Group $SO(3)$}
+
+The properties of $SO(3)$ are from \cite[Ch.~7]{Barfoot2017}. Three dimensional rotations can be represented by the special orthogonal group $SO(3)$,
+\bdis
+	SO(3) = \left\{\mbf{C} \in \mathbb{R}^{3 \times 3} \ | \ \mbf{C}^\trans \mbf{C} = \mbs{1}, \textrm{det }\mbf{C} = +1 \right\}.
+\edis 
+The matrix $\mbf{C}$ is known as a direction cosine matrix (DCM). $SO(3)$ has three degrees of freedom for rotation. 
+The Lie algebra associated with $SO(3)$ is
+\bdis
+	\mathfrak{so}(3) = \left\{ \mbs{\phi}^\times \in \mathbb{R}^{3 \times 3} \ | \ \mbs{\phi} \in \mathbb{R}^3\right\},
+\edis
+where $\mbs{\phi}^\times$ is the skew-symmetric representation of $\mbs{\phi}$,
+\bdis
+	\mbs{\phi}^\times = \bma{c} \phi_1 \\ \phi_2 \\ \phi_3 \ema^\times = 
+	\bma{ccc}
+		0 & -\phi_3 & \phi_2 \\
+		\phi_3 & 0 & -\phi_1 \\
+		-\phi_2 & \phi_1 & 0
+	\ema.
+\edis 
+The adjoint representation of an element of $SO(3)$ is identically that element,  $\textrm{Ad}(\mbf{C}) =\mbf{C}$.
+Similarly, the adjoint representation of an element of $\mathfrak{so}(3)$ is identical to that element, $\textrm{ad}(\mbs{\phi}) = \mbs{\phi}^\times$. The closed form of the exponential map from $\mathfrak{so}(3)$ to $SO(3)$ is known as the Rodrigues formula,
+\bdis
+	\exp (\mbs{\phi}^\times) = \cos\phi\mbs{1} + (1 - \cos\phi)\mbf{a}\mbf{a}^\trans + \sin\phi \mbf{a}^\times,
+\edis
+where $\phi = \norm{\mbs{\phi}}$ and $\mbf{a} = \mbs{\phi}/\phi$. The logarithmic map from $SO(3)$ to $\mathfrak{so}(3)$ is
+\bdis
+	\log(\mbf{C}) = \left(\mbf{a}\phi\right)^\times,
+\edis
+where the angle $\phi$ is given by
+\bdis
+	\phi = \cos^{-1}\left(\f{\textrm{tr}(\mbf{C}) - 1)}{2}\right) + 2\pi m
+\edis
+and the axis $\mbf{a}$ is 
+\bdis
+	\mbf{a} = \f{1}{2\sin(\phi)}
+	\bma{c}
+		\mbf{C}_{2,3} - \mbf{C}_{3,2} \\
+		\mbf{C}_{3,1} - \mbf{C}_{1,3} \\
+		\mbf{C}_{1,2} - \mbf{C}_{2,1} \\
+	\ema.
+\edis
+
+\section{The Special Euclidean Group $SE(3)$}
+
+Poses can be represented by the special euclidean group $SE(3)$ \cite[Ch.~7]{Barfoot2017}, 
+\bdis
+	SE(3) = \left\{ \mbf{T} = \bma{cc} \mbf{C} & \mbf{r} \\ \mbs{0} & 1 \ema \in \mathbb{R}^{4 \times 4} \ \bigg| \ \mbf{C} \in SO(3), \mbf{r} \in \mathbb{R}^3 \right\}.
+\edis
+$SE(3)$ has three degrees of freedom for rotation and three for translation, for a total of six. The inverse of $\mbf{T}$ is defined as
+\bdis
+	\mbf{T}^{-1} =  \bma{cc} \mbf{C}^\trans & -\mbf{C}^\trans\mbf{r} \\ \mbs{0} & 1 \ema.
+\edis
+The matrix Lie algebra associated with $SE(3)$ is 
+\bdis 
+	\mathfrak{se}(3) = \left\{ \mbs{\Xi} = \mbs{\xi}^\wedge \in \mathbb{R}^{4 \times 4} \ | \ \mbs{\xi} \in \mathbb{R}^6\right\},
+\edis where 
+\bdis
+	\mbs{\xi}^\wedge = 
+	\bma{c} 
+		\mbs{\xi}^\phi \\
+		\mbs{\xi}^\mathrm{r}
+	 \ema^\wedge = 
+	 \bma{cc} 
+	 	{\mbs{\xi}^\phi}^\times & \mbs{\xi}^\mathrm{r} \\
+	 	\mbs{0} & 0 
+	 \ema \in \mathbb{R}^{4 \times 4}, \ \mbs{\xi}^\phi , \mbs{\xi}^\mathrm{r} \in  \mathbb{R}^3.
+\edis
+Note that, in \cite{Barfoot2017}, $\mbs{\xi}$ is defined in the opposite order, such that ${\mbs{\xi}^\phi}$ is below $\mbs{\xi}^\mathrm{r}$. The convention used here is adopted from \cite{Barrau2017}. The exponential map from $\mathfrak{se}(3)$ to $SE(3)$ is 
+\bdis
+	\exp\left(\mbs{\xi}^\wedge\right) =  \bma{cc} \exp_{SO(3)}\left({\mbs{\xi}^\phi}^\times\right) & \mbf{J}\mbs{\xi}^\mathrm{r} \\ \mbs{0} & 1 \ema,
+\edis
+where
+\beq
+	\mbf{J} = \frac{\sin\phi}{\phi}\mbf{1} + \left( 1 - \frac{\sin\phi}{\phi} \right)\mbf{a}\mbf{a}^\trans + \frac{1 - \cos\phi}{\phi}\mbf{a}^\times, \label{eq:SE3_Jac}
+\eeq
+where $\phi = \norm{\mbs{\xi}^\phi}$ and $\mbf{a} = \mbs{\xi}^\phi/\phi$. The logarithmic map from $SE(3)$ to $\mathfrak{se}(3)$ is
+\bdis
+	\log(\mbf{T}) = 
+	\bma{cc}
+		\log_{SO(3)}(\mbf{C}) & \mbf{J}^{-1}\mbf{r} \\
+		\mbf{0} & 0
+	\ema,
+\edis
+where
+\beq
+	\mbf{J}^{-1} = \frac{\phi}{2}\cot\f{\phi}{2}\mbf{1} + \left( 1 - \frac{\phi}{2}\cot\f{\phi}{2} \right)\mbf{a}\mbf{a}^\trans - \frac{\phi}{2}\mbf{a}^\times. \label{eq:SE3_invJac}
+\eeq
+The adjoint representation of an element of $SE(3)$ is
+\bdis
+	\textrm{Ad}(\mbf{T}) = 
+	\bma{cc}
+		\mbf{C} &  \mbf{0}\\
+		\mbf{r}^{\times}\mbf{C} & \mbf{C} 
+	\ema
+	\in \mathbb{R}^{6 \times 6}.
+\edis 
+The inverse of $\textrm{Ad}(\mbf{T})$ is
+\bdis
+	\left(\textrm{Ad}({\mbf{T}}\right))^{-1} = \textrm{Ad}\left(\mbf{T}^{-1}\right) = 
+	\bma{cc}
+		\mbf{C}^{\trans} &  \mbf{0} \\
+		-\mbf{C}^{\trans}\mbf{r}^{\times} & \mbf{C}^{\trans} 
+	\ema
+	\in \mathbb{R}^{6 \times 6}.
+\edis
+The adjoint representation of an element of $\mathfrak{se}(3)$ is
+\bdis
+	\textrm{ad}(\mbs{\xi}) = 
+	\bma{cc}
+		{\mbs{\xi}^\phi}^\times & \mbf{0} \\ 
+		{\mbs{\xi}^\mathrm{r}}^\times  & {\mbs{\xi}^\phi}^\times  
+	\ema.
+\edis
+
+\section{The Group of Double Direct Isometries $SE_2(3)$}
+
+Introduced in \cite{Barrau2015} and explored in detail in \cite{Barrau2018a}, $SE_2(3)$, the group of double direct isometries, is 
+\bdis
+	SE_2(3) = \left\{ \mbf{T} = \bma{ccc} \mbf{C} & \mbf{v} & \mbf{r} \\ \mbf{0} &  1 & 0 \\ \mbf{0} &  0 & 1 \ema \in \mathbb{R}^{5 \times 5} \ \bigg| \ \mbf{C} \in SO(3), \mbf{v},\mbf{r} \in \mathbb{R}^3 \right\}.
+\edis 
+The matrix Lie algebra associated with $SE_2(3)$ is
+\bdis
+	\mathfrak{se}_2(3) = \left\{ \mbs{\Xi} = \mbs{\xi}^\wedge \in \mathbb{R}^{5 \times 5} \ | \ \mbs{\xi} \in \mathbb{R}^9\right\},
+\edis
+where 
+\bdis
+	\mbs{\xi}^\wedge = 
+	\bma{c}
+		\mbs{\xi}^\phi \\ 
+		\mbs{\xi}^\mathrm{v} \\
+		\mbs{\xi}^\mathrm{r}
+	\ema^\wedge = 
+	\bma{ccc}
+		{\mbs{\xi}^\phi}^\times & \mbs{\xi}^\mathrm{v} & \mbs{\xi}^\mathrm{r} \\ 
+		\mbf{0} & 0 & 0 \\
+		\mbf{0} & 0 & 0  
+	\ema.
+\edis
+The exponential map from $\mathfrak{se}_2(3)$ to $SE_2(3)$ is 
+\bdis
+	\exp\left(\mbs{\xi}^\wedge\right) = 
+	\bma{ccc}	
+		\exp_{SO(3)}\left({\mbs{\xi}^\phi}^\times\right) & \mbf{J}\mbs{\xi}^\mathrm{v} & \mbf{J}\mbs{\xi}^\mathrm{r} \\
+		\mbf{0} & 1 & 0 \\
+		\mbf{0} & 0 & 1
+	\ema,
+\edis
+where $\mbf{J}$ is given by \eqref{eq:SE3_Jac}. The logarithmic map from $SE_2(3)$ to $\mathfrak{se}_2(3)$ is
+\bdis
+	\log(\mbf{T}) = 
+	\bma{ccc}
+		\log_{SO(3)}(\mbf{C}) & \mbf{J}^{-1}\mbf{v} & \mbf{J}^{-1}\mbf{r} \\
+		\mbf{0} & 0 & 0 \\
+		\mbf{0} & 0 & 0
+	\ema,
+\edis
+where $\mbf{J}^{-1}$ is given by \eqref{eq:SE3_invJac}. The adjoint representation of an element of $SE_2(3)$ is 
+\bdis
+	\textrm{Ad}(\mbf{T}) = 
+	\bma{ccc}
+		\mbf{C} & \mbf{0} & \mbf{0} \\
+		\mbf{v}^\times\mbf{C} & \mbf{C} & \mbf{0} \\
+		\mbf{r}^\times\mbf{C} & \mbf{0} & \mbf{C} \\
+	\ema.
+\edis
+The adjoint representation of an element of $\mathfrak{se}_2(3)$ is 
+\bdis
+	\textrm{ad}(\mbs{\xi}) = 
+	\bma{ccc}
+		{\mbs{\xi}^\phi}^\times & \mbf{0} & \mbf{0} \\
+		{\mbs{\xi}^\mathrm{v}}^\times & {\mbs{\xi}^\phi}^\times  & \mbf{0} \\
+		{\mbs{\xi}^\mathrm{r}}^\times & \mbf{0} & {\mbs{\xi}^\phi}^\times  \\
+	\ema.
+\edis
+
+
+
+\section{Geometry}
+
+A reference frame $\rframe{a}$ is defined by three physical basis vectors $\ura{a}^1$, $\ura{a}^2$, and $\ura{a}^3$. In particular, the vectrix $\vectrix{a}$ can be defined as \cite{hughes2012}
+\bdis
+	\vectrix{a} = 
+	\bma{c}
+		\ura{a}^1 \\
+		\ura{a}^2 \\
+		\ura{a}^3
+	\ema.
+\edis
+A physical vector $\ura{u}$ can then be written as
+\bdis
+	\ura{u} = \vectrix{a}^{\trans}\mbf{u}_a,
+\edis
+where $\ura{u} \in \mathbb{P}$ and $\mbf{u}_a \in \mathbb{R}^3$ is the physical vector $\ura{u}$ resolved in $\rframe{a}$. The orientation of $\rframe{b}$ relative to $\rframe{a}$ is given by a DCM $\mbf{C}_{ab} \in SO(3)$. The relationship between $\ura{u}$ resolved in $\mc{F}_a$, $\mbf{u}_a$, and $\ura{u}$ resolved in $\mc{F}_b$, $\mbf{u}_b$, is $\mbf{u}_a = \mbf{C}_{ab} \mbf{u}_b$. 
+
+
+\section{Kinematics}
+
+The position of point $z$ relative to point $w$ is described by the physical vector $\ura{r}^{zw}$. The rate of change of $\ura{r}^{zw}$ with respect to $\rframe{a}$ is denoted $\ura{r}^{zw ^\fdot{a}} = \ura{v}^{zw/a}$.  Similarly, $\ura{r}^{zw \fdot{a} \fdot{a}} = \ura{v}^{zw/a \fdot{a}} = \ura{a}^{zw/a/a}$. These physical vectors can all then be resolved in a frame, as appropriate.
+Poisson's equation is
+\bdis
+	\mbfdot{C}_{ab} = \mbf{C}_{ab}{\mbs{\omega}_b^{ba}}^\times,
+\edis
+where $\mbs{\omega}_b^{ba}$ is the angular velocity of $\rframe{b}$ relative to $\rframe{a}$ resolved in $\rframe{b}$. When discretized, Poisson's equation becomes
+\bdis
+	\mbf{C}_{ab_k} = \mbf{C}_{ab_{k-1}}\exp\left(\left(T\mbs{\omega}_{b_{k-1}}^{b_{k-1}a}\right)^\times\right),
+\edis
+where $T = t_k - t_{k-1}$.
+\section{Optimization}
+
+Consider a standard optimization problem 
+\bdis
+	\mbf{x}^\star = \underset{\mbf{x} \in \mathbb{R}^n}{\mathrm{argmin}} \; J(\mbf{x}),
+\edis
+where $\mbf{x}^\star$ is the minimizing solution of the cost function $J(\mbf{x})$. Two types of optimization problems are of interest here, namely linear and nonlinear least squares. 
+\subsection{Linear Least Squares}
+
+Consider a linear system that can be written 
+\bdis
+	\mbf{A}\mbf{x} = \mbf{b},
+\edis
+where $\mbf{A} \in \mathbb{R}^{m \times n}$, $\mbf{x} \in \mathbb{R}^{n}$, and $\mbf{b} \in \mathbb{R}^{m}$. Define the error to be $\mbs{\rho}(\mbf{x}) = \mbf{A}\mbf{x} - \mbf{b}$. The objective function to be minimized is
+\beq
+	J(\mbf{x}) = \f{1}{2}\mbs{\rho}(\mbf{x})^\trans\mbs{\rho}(\mbf{x}). \label{eq:pre_lin_ls_cost}
+\eeq
+The solution minimizing \eqref{eq:pre_lin_ls_cost} is
+\bdis	
+	\mbf{x}^\star = \left(\mbf{A}^\trans\mbf{A}\right)^{-1}\left(\mbf{A}^\trans\mbf{b}\right).
+\edis
+Explicitly computing the inverse of $\mbf{A}^\trans\mbf{A}$ can be computationally costly. To alleviate these costs, a Cholesky factorization can be used to decompose $\mbf{A}^\trans\mbf{A}$. This leads to
+\bdis
+	\mbf{A}^\trans\mbf{A} = \mbf{L}\mbf{L}^\trans,
+\edis
+where $\mbf{L}$ is lower triangular. The linear least squares problem can then be rewritten as
+\bdis
+	\mbf{L}\mbf{L}^\trans\mbf{x}^\star = \mbf{A}^\trans\mbf{b}.
+\edis
+Letting $\mbf{L}^\trans\mbf{x}^\star = \mbf{z}$, it is possible to solve
+\bdis	
+	\mbf{L}^\trans\mbf{z} = \mbf{A}^\trans\mbf{b}
+\edis 
+for $\mbf{z}$ via forwards substitution. The minimizing solution $\mbf{x}^\star$ is then found by solving $\mbf{L}\mbf{x}^\star = \mbf{z}$ using backward substitution.
+
+\subsection{Nonlinear Least Squares}
+
+This section is based on \cite{Barfoot2017}. In practice, the error function $\mbs{\rho}(\mbf{x})$ is often not linear, and is instead some nonlinear function of $\mbf{x}$. In this case, a Taylor series expansion of the cost function is used to linearize the problem. Consider a function $f(\cdot):\mathbb{R}^n \to \mathbb{R}^m$. A Taylor series expansion of $f$ is
+\bdis
+	f(\mbf{x}^\op + \mbfdel{x}) = f(\mbf{x}^\op) + \left[\f{\partial f(\mbf{x})}{\partial \mbf{x}}\bigg\rvert_{\mbf{x} = \mbf{x}^\op} \right]\mbfdel{x} + \f{1}{2}\mbfdel{x}^\trans\left[\f{\partial^2 f(\mbf{x})}{\partial \mbf{x}\partial \mbf{x}^\trans}\bigg\rvert_{\mbf{x} = \mbf{x}^\op}\right] \mbfdel{x} + \mc{O}\left(\norm{\mbfdel{x}^3}\right),
+\edis  
+where $\mbf{x}^\op$ is the operating point. 
+The Jacobian of $f$ is
+\bdis
+	\nabla f(\mbf{x}^\op) = \f{\partial f(\mbf{x})}{\partial \mbf{x}}\bigg\rvert_{\mbf{x} = \mbf{x}^\op} 
+\edis
+and the Hessian of $f$ is
+\bdis
+	\nabla^2 f(\mbf{x}^\op) = \f{\partial^2 f(\mbf{x})}{\partial \mbf{x}\partial \mbf{x}^\trans}\bigg\rvert_{\mbf{x} = \mbf{x}^\op}.
+\edis
+
+
+\subsubsection{Newton's Method \cite{Barfoot2017}}
+\label{sssec:newton}
+Taking a second-order Taylor series expansion of the cost function $J(\mbf{x})$ yields
+\beq
+	J(\mbf{x}^\op + \mbfdel{x}) = J(\mbf{x}^\op) + \nabla J(\mbf{x}^\op)\mbfdel{x} + \f{1}{2}\mbfdel{x}^\trans\nabla^2 J(\mbf{x}^\op)\mbfdel{x}. \label{eq:cost_function_ts}
+\eeq
+To minimize the cost function, the derivative of \eqref{eq:cost_function_ts} with respect to $\mbfdel{x}$ is computed and set to zero,
+\begin{align}
+	 \nabla J(\mbf{x}^\op) + {\mbfdel{x}^\star}^\trans\nabla^2 J(\mbf{x}^\op) &= 0, \notag \\ 
+	\nabla^2 J(\mbf{x}^\op){\mbfdel{x}^\star} &= -\nabla J(\mbf{x}^\op). \label{eq:newtons_method}
+\end{align}
+Assuming the Hessian is positive definite and therefore invertible, \eqref{eq:newtons_method} can be solved. The operating point is then updated,
+\bdis
+	\mbf{x}^\op \leftarrow\mbf{x}^\op + \mbfdel{x}^\star.
+\edis
+To improve the performance of Newton's method, it is common to multiply the update by a step length $\alpha > 0$, leading to
+\bdis
+	\mbf{x}^\op \leftarrow\mbf{x}^\op + \alpha\mbfdel{x}^\star.
+\edis
+A backtracking procedure is used to find the step length \cite[p. 37]{Nocedal2006}. This method is summarized in Algorithm~\ref{alg:backtracking}. The parameter $c$ is typically chosen to be small (approximately $10^{-4}$) and $\rho$ is tuned to a desired convergence rate. In Newton methods, $\bar{\alpha} = 1$. 
+\begin{algorithm}[H]
+\singlespacing
+\caption{}\label{alg:backtracking}
+\begin{algorithmic}[1]
+\State Select $\bar{\alpha} > 0$, $\rho \in (0,1)$, $c \in (0,1)$
+\State Set $\alpha \gets \bar{\alpha}$
+\While{$J(\mbf{x}^\op + \alpha\mbfdel{x}^\star) > J(\mbf{x}^\op) + c \alpha \nabla J(\mbf{x}^\op)^\trans\mbfdel{x}^\star$}
+	\State $\alpha \gets \rho \alpha$
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\subsubsection{Gauss-Newton Method}
+
+The Gauss-Newton method \cite{Barfoot2017} is applicable when the cost function is a nonlinear least squares cost function,
+\bdis
+	J(\mbf{x}) = \f{1}{2}\mbs{\rho}(\mbf{x})^\trans\mbs{\rho}(\mbf{x}).
+\edis
+A first-order Taylor series expansion yields
+\begin{align}
+	J(\mbf{x}^\op + \mbfdel{x}) &= \f{1}{2}\mbs{\rho}(\mbf{x}^\op + \mbfdel{x})^\trans\mbs{\rho}(\mbf{x}^\op + \mbfdel{x}), \notag \\
+	2J(\mbf{x}^\op + \mbfdel{x}) &= \left(\mbs{\rho}(\mbf{x}^\op) + \nabla J(\mbf{x}^\op)\mbfdel{x}\right)^\trans\left(\mbs{\rho}(\mbf{x}^\op) + \nabla J(\mbf{x}^\op)\mbfdel{x}\right) \notag \\
+	&= \mbs{\rho}(\mbf{x}^\op)^\trans\mbs{\rho}(\mbf{x}^\op) + \mbs{\rho}(\mbf{x}^\op)^\trans \nabla J(\mbf{x}^\op)\mbfdel{x} + \left( \nabla J(\mbf{x}^\op)\mbfdel{x}\right)^\trans\mbs{\rho}(\mbf{x}^\op) + \notag \\
+	 &  \qquad \left( \nabla J(\mbf{x}^\op)\mbfdel{x}\right)^\trans\nabla J(\mbf{x}^\op)\mbfdel{x}. \label{eq:cost_function_GN}
+\end{align}
+Once again, the derivative of \eqref{eq:cost_function_GN} is taken with respect to $\mbfdel{x}$ and set to zero, yielding
+\bdis
+	2\f{\partial J(\mbf{x}^\op + \mbfdel{x})}{\partial \mbfdel{x}} =  2\mbs{\rho}(\mbf{x}^\op)^\trans\nabla J(\mbf{x}^\op) + 2\mbfdel{x}^\trans\nabla J(\mbf{x}^\op)^\trans\nabla J(\mbf{x}^\op) = 0,
+\edis 
+leading to 
+\bdis
+	\nabla J(\mbf{x}^\op)^\trans\nabla J(\mbf{x}^\op)\mbfdel{x} = - \nabla J(\mbf{x}^\op)^\trans\mbs{\rho}(\mbf{x}^\op).
+\edis
+This is often written
+\bdis
+	\left(\mbf{H}\mbf{H}^\trans\right) \mbfdel{x} = -\mbf{H}^\trans\mbs{\rho}(\mbf{x}^\op),
+\edis
+where
+\bdis
+	\mbf{H} = \nabla J(\mbf{x}^\op).
+\edis
+This is iterated until convergence using the technique described in Section~\ref{sssec:newton}
+.
+\subsubsection{Levenberg-Marquardt Method}
+A small modification to the Gauss-Newton method leads to the Levenberg-Marquardt method \cite{Levenberg1944, Marquardt1962, Roweis1996},
+\bdis
+	\left(\mbf{H}\mbf{H}^\trans + \lambda \mathrm{diag}(\mbf{H}\mbf{H}^\trans)\right) \mbfdel{x} = -\mbf{H}^\trans\mbs{\rho}(\mbf{x}^\op),
+\edis
+where $\lambda \geq 0$ is a damping factor. This damping factor allows the condition of the Hessian to be improved. Multiplying by the diagonal elements of the Hessian allows for the scaling of the problem to be preserved. The parameter $\lambda$ can be found using a technique such as the one shown in Algortihm~\ref{alg:lambda}. The value of $\lambda$ is chosen such that the computed update will result in a decrease of the objective function. If the initial $\lambda$ is too low, it is increased. 
+\begin{algorithm}[H]
+\singlespacing
+\caption{}\label{alg:lambda}
+\begin{algorithmic}[1]
+\State Set $\lambda = 0$
+\State Compute $\mbfdel{x}^\star$
+\State Set $\lambda \geq 0 $
+\While{$J(\mbf{x}^\op + \mbfdel{x}^\star) > J(\mbf{x}^\op)$}
+	\State $\lambda \gets 10\lambda$
+	\State Recompute $\mbfdel{x}^\star$
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+\section{State Estimation}
+
+A robotic system can be described by a set of states. These states often include position, attitude, and any other quantity that can help describe the motion of the body. Two methods of state estimation are considered herein, namely the Kalman filter and  batch estimation.
+
+\subsection{Extended Kalman Filtering}
+
+The Kalman filter and its nonlinear variant, the extended Kalman filter (EKF), are two of the most common state estimation algorithms used today. Only the EKF is presented here. Consider nonlinear process and measurement models given by
+\begin{align}
+	\mbfdot{x} &= \mbf{f}(\mbf{x},\mbf{u},\mbf{w}), \label{eq:pre_f} \\
+	\mbf{y}_k &= \mbf{g}_k(\mbf{x}_k,\mbf{v}_k) \label{eq:pre_g},
+\end{align}
+where $\mbf{x} \in \mathbb{R}^{n_x}$ is the state, $\mbf{u} \in \mathbb{R}^{n_u}$ is the interoceptive measurement,  $\mbf{w} \in \mathbb{R}^{n_u}$ is the interoceptive measurement, or process, noise, $\mbf{y}_k \in \mathbb{R}^{n_y}$ is the exteroceptive measurement at time $t_k$ and $\mbf{v}_k \sim \mathcal{N}(\mbf{0},\mbf{R}_k)$  is the exteroceptive measurement noise. The process noise is white and band-limited, and, when discretized, is normally distributed with zero mean and covariance $\mbf{Q}_k$. 
+
+To implement an EKF, the process and measurement models must be linearized about an operating point. A first-order Taylor series expansion of \eqref{eq:pre_f} yields
+\bdis
+	\delta \mbfdot{x} = \mbf{A}\mbfdel{x} + \mbf{L}\mbfdel{w},
+\edis
+where 
+\begin{align*}
+	\mbf{A} & = \frac{\partial\mbf{f}(\mbf{x},\mbf{u},\mbf{w})}{\partial\mbf{x}}\bigg\rvert_{\mbfbar{x},\mbf{u},\mbfbar{w}}, \\
+	\mbf{L} & = \frac{\partial\mbf{f}(\mbf{x},\mbf{u},\mbf{w})}{\partial\mbf{w}}\bigg\rvert_{\mbfbar{x},\mbf{u},\mbfbar{w}},
+\end{align*}
+are the process model Jacobians evaluated at the nominal solution. Similarly, a first-order Taylor series expansion of \eqref{eq:pre_g} yields
+\bdis
+	\mbfdel{y}_k = \mbf{H}_k\mbfdel{x}_k + \mbf{L}_k\mbfdel{v}_k,
+\edis
+where
+\begin{align*}
+	\mbf{H}_k & = \frac{\partial\mbf{g}_k(\mbf{x}_k,\mbf{v}_k)}{\partial\mbf{x}_k}\bigg\rvert_{\mbfbar{x}_k,\mbfbar{v}_k}, \\
+	\mbf{M}_k & = \frac{\partial\mbf{g}_k(\mbf{x}_k,\mbf{v}_k)}{\partial\mbf{v}_k}\bigg\rvert_{\mbfbar{x}_k,\mbfbar{v}_k},
+\end{align*}
+are the measurement model Jacobians evaluated at the nominal solution. In an EKF, the nominal noise values are assumed to be $\mbfbar{w} = \mbf{0}$ and $\mbfbar{v}_k = \mbf{0}$, and the nominal value of the state is the best estimate provided by the filter. 
+
+As interoceptive measurements are available, the state estimate is predicted by integrating \eqref{eq:pre_f},
+\bdis
+	\mbfch{x}_k = \mbfhat{x}_{k-1} + \int_{t_{k-1}}^{t_k} \mbf{f}(\mbfhat{x},\mbf{u},\mbf{0})\dt,
+\edis
+where $\hat{(\cdot)}$ is used to denote the corrected state and $\check{(\cdot)}$ is used to denote the predicted state. 
+The covariance is predicted using
+\bdis
+	\mbfch{P}_k = \mbf{A}_{k-1}\mbf{P}_{k-1}\mbf{A}_{k-1}^\trans + \mbf{L}_{k-1}\mbf{Q}_{k-1}\mbf{L}_{k-1}^\trans.
+\edis
+When exteroceptive measurements are available, the state estimate is corrected. The correction equations are  
+\begin{align*}
+	\mbf{K}_k &= \mbfch{P}_k\mbf{H}_k^\trans(\mbf{H}_k\mbfch{P}_k\mbf{H}_k^\trans + \mbf{M}_k\mbfch{R}_k\mbf{M}_k^\trans)^{-1}, \\
+	\mbfhat{x}_k &= \mbfch{x}_k + \mbf{K}_k(\mbf{y}_k - \mbf{g}(\mbfch{x}_k,\mbf{0})), \\
+	\mbf{P}_k &= (\mbf{1} - \mbf{K}_k\mbf{H}_k)\mbfch{P}_k(\mbf{1} - \mbf{K}_k\mbf{H}_k)^\trans + \mbf{K}_k\mbf{M}_k\mbf{R}_k\mbf{M}_k^\trans\mbf{K}_k^\trans,
+\end{align*}
+where $\mbf{K}_k$ is the Kalman gain.
+
+\subsection{Batch Estimation \cite[pp.127-143]{Barfoot2017}}
+
+Batch estimation is useful in situations when the estimation algorithm does not need to run in real time. Once again, only the nonlinear variant of batch estimation is presented. The state at each time step composes the trajectory
+\bdis
+	\mbf{x} = 
+	\bma{c}
+		\mbf{x}_0 \\
+		\mbf{x}_1 \\
+		\vdots \\
+		\mbf{x}_n
+	\ema,
+\edis
+where $t \in [t_0,t_n]$.
+The discrete-time kinematics are given by
+\bdis
+	\mbf{x}_k = \mbf{f}_{k-1}\left(\mbf{x}_{k-1},\mbf{u}_{k-1},\mbf{w}_{k-1}\right),
+\edis
+where $\mbf{u}_{k-1}$ are the interoceptive measurements, or inputs, and $\mbf{w}_{k-1} \sim \mathcal{N}(\mbf{0},\mbf{Q}_{k-1})$ is zero-mean white noise. The exteroceptive measurements are modelled as
+\bdis
+	\mbf{y}_k = \mbf{g}_k(\mbf{x}_k) + \mbf{v}_k
+\edis
+where $\mbf{v}_{k} \sim \mathcal{N}\left(\mbf{0},\mbf{R}_{k}\right)$. A batch maximum \textit{a posteriori} method is be used to solve the batch estimation problem. The input errors are 
+\begin{align*}
+	\mbf{e}_{u,0}(\mbf{x}) &= \mbfch{x}_0 - \mbf{x}_0. \\
+	\mbf{e}_{u,k}(\mbf{x}) &= \mbf{f}_{k-1}(\mbf{x}_{k-1},\mbf{u}_{k-1},\mbf{0}) - \mbf{x}_k, \quad k = 1,\ldots,n,
+\end{align*}
+where $\mbfch{x}_0$ is the initial state estimate, $\mbfch{x}_0 \sim \mc{N}(\mbf{0},\mbf{P}_0)$. The errors in the exteroceptive measurements are
+\bdis
+	\mbf{e}_{y,k}(\mbf{x}) = \mbf{y}_k - \mbf{g}_k(\mbf{x}_k), \quad k = 1,\ldots,n.
+\edis
+The objective function to minimize is
+\bdis
+	J(\mbf{x}) = \f{1}{2}\mbf{e}_{u,0}(\mbf{x})^\trans\mbf{W}_{u,0}^{-1}\mbf{e}_{u,0}(\mbf{x}) + \f{1}{2}\sum_{k = 1}^n\mbf{e}_{u,k}(\mbf{x})^\trans\mbf{W}_{u,k}^{-1}\mbf{e}_{u,k}(\mbf{x}) + \f{1}{2}\sum_{k = 1}^n\mbf{e}_{y,k}(\mbf{x})^\trans\mbf{W}_{y,k}^{-1}\mbf{e}_{y,k}(\mbf{x}),
+\edis
+where $\mbf{W}_{u,0}$, $\mbf{W}_{u,k}$, and $\mbf{W}_{y,k}$ are weighting matrices related to the error distribution. The error is deemed Gaussian, as it is assumed that it arises only due to the presence of Gaussian noise in the measurements.  Further defining
+\bdis
+	\mbf{e}(\mbf{x}) =
+	\bma{c}
+		\mbf{e}_{u,0}(\mbf{x}) \\
+		\vdots \\
+		\mbf{e}_{u,n}(\mbf{x})\\
+		\hline
+		\mbf{e}_{y,1}(\mbf{x}) \\
+		\vdots \\
+		\mbf{e}_{y,n}(\mbf{x})
+	\ema,
+\edis
+and $\mbf{W}_{u} = \textrm{diag}(\mbf{W}_{u,0},\mbf{W}_{u,1},\ldots,\mbf{W}_{u,n})$, $\mbf{W}_y = \textrm{diag}(\mbf{W}_{y,1},\ldots,\mbf{W}_{y,n})$ and $\mbf{W} = \textrm{diag}(\mbf{W}_u,\mbf{W}_y)$, the objective function is rewritten as
+\bdis
+	J(\mbf{x}) = \f{1}{2}\mbf{e}(\mbf{x})^\trans\mbf{W}^{-1}\mbf{e}(\mbf{x}).
+\edis
+To minimize this objective function, linearize the errors about an operating point $\mbf{x}^\op$. The linearized prior error has the form
+\bdis
+	\mbf{e}_{u,0}(\mbf{x}) = \mbf{e}_{u,0}(\mbf{x}^\op) - \mbf{F}_0^2\mbsdel{\epsilon}_{0},
+\edis
+where $\mbsdel{\epsilon}_k$ is the error between the operating and truth trajectory.
+The linearized input error has the form
+\bdis
+	\mbf{e}_{u,k}(\mbf{x}) = \mbf{e}_{u,k}(\mbf{x}^\op) + \mbf{F}_k^1\mbsdel{\epsilon}_{k-1} - \mbf{F}_k^2\mbsdel{\epsilon}_k. 
+\edis
+The linearized measurement error has the form
+\bdis
+	\mbf{e}_{y,k}(\mbf{x}) = \mbf{e}_{y,k}(\mbf{x}^\op) - \mbf{H}_{k}\mbsdel{\epsilon}_{k}.
+\edis
+By stacking the estimation errors
+\bdis
+	\mbfdel{x} =
+	\bma{c}
+		\mbsdel{\epsilon}_0 \\
+		\vdots \\
+		\mbsdel{\epsilon}_n
+	\ema,
+\edis
+the linearized system can then be written 
+\bdis
+	\mbf{e}(\mbf{x}) = \mbf{e}(\mbf{x}^\op) - \mbs{\Gamma}\mbfdel{x},
+\edis
+where
+\bdis
+	\mbs{\Gamma} = 
+	\bma{c}
+		\mbf{A}^{-1} \\
+		\mbf{H}
+	\ema,
+\edis
+where 
+\bdis
+	\mbf{A}^{-1} = 
+	\bma{cccc}
+		\mbf{F}_0^2    &             &                &              \\
+		\mbf{F}_1^1 & \mbf{F}_1^2     &                & 		       \\
+		           & \ddots      & \ddots         & 		       \\
+		 		   &             & \mbf{F}_{n-1}^1 & \mbf{F}_{n-1}^2       
+	\ema, \\
+\edis
+and
+\bdis
+	\mbf{H} = 
+	\bma{cccc}
+		& \mbf{H}_1 & & \\
+		& & \ddots & \\
+		& & & \mbf{H}_n
+	\ema.
+\edis
+The linearized objective function is 
+\beq
+	J(\mbf{x} + \mbf{x}^\op) = (\mbf{e}(\mbf{x}^\op) + \mbs{\Gamma}\mbfdel{x})^\trans\mbf{W}^{-1}(\mbf{e}(\mbf{x}^\op) + \mbs{\Gamma}\mbfdel{x}) \label{eq:pre_batch_lin_cost}
+\eeq
+Minimizing \eqref{eq:pre_batch_lin_cost} with respect to $\mbfdel{x}$ yields the Gauss-Newton update,
+\bdis
+	\left(\mbs{\Gamma}^\trans\mbf{W}^{-1}\mbs{\Gamma}\right)\mbfdel{x} = \mbs{\Gamma}^\trans\mbf{W}^{-1}\mbf{e}(\mbf{x}^\op),
+\edis
+which can be iteratively solved for the minimizing solution $\mbfdel{x}^\star$. 
+
+\section{Summary}
+
+The tools presented in this chapter are used throughout this thesis. The invariant filtering theory applies directly to problems defined on matrix Lie groups. Matrix lie group theory, along with knowledge of geometry and kinematics, are used to build models. The optimization techniques detailed here are extensively used in solving SLAM problems and are essential to understanding the material presented in Chapter~\ref{chap:batch}. Lastly, this thesis builds on several well established state estimation techniques.
+
+

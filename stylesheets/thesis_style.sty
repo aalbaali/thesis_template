@@ -7,7 +7,7 @@
 % 'operating point'. TODO: Delete if not needed.
 \newcommand{\op}{\mathrm{op}}
 
-% helper bold symbols. TODO: Delete
+% helper bold symbols.
 \newcommand{\mbsch}[1]{\mbscheck{#1}}
 \newcommand{\mbfch}[1]{\mbfcheck{#1}}
 
@@ -96,7 +96,8 @@
 
 % MATLAB in small caps
 \newcommand{\matlab}[0]{{\textsc{matlab}\@}\xspace}
-% Math definition (similar to \traingleq but slightly different formatting)
+
+% (``is defined as'') Math definition (similar to \traingleq but slightly different formatting)
 \long \def
   \isdef{
     \mathrel{
@@ -109,19 +110,11 @@
     }
   }
 
-% Add text to the margin. TODO: Remove
-\newcommand{\mymargin}[1]{\marginnote{{\footnotesize #1}}\index{#1}}
+% % Add text to the margin. TODO: Remove
+% \newcommand{\mymargin}[1]{\marginnote{{\footnotesize #1}}\index{#1}}
 
 % Vectrix transposed. TODO: Remove
 \newcommand{\vectrixT}[1]{{\ensuremath \underrightarrow{\boldsymbol{\mathcal{F}}}^{\ensuremath{\mathsf{T}}}_{#1}}}
-
-% TODO: Remove
-\newenvironment{packedItemize}{
-\begin{itemize}
-  \setlength{\itemsep}{1pt}
-  \setlength{\parskip}{0pt}
-  \setlength{\parsep}{0pt}
-}{\end{itemize}}
 
 % // Additional custom commands
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
