@@ -1,70 +1,114 @@
-% The packages used here are just a sample. You may need others, and may not need some of these. It doesn't hurt to leave them in, unless they start to conflict with other packages you've added. Chapter 2 has example code for equations, figures, tables, citations, abbreviations, etc. If there are sections labeled 'optional' that you don't want, just comment them out. -jg
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Thesis Format
+% - Script and Page Format
+%    - A conventional font, size 12-point,
+%    - 12 characters per inch must be used.
+%    - Line spacing must be double or 1.5.
+%    - Left and right hand margins should be 1 inch.
+% - Pagination
+%    - Positioning of page numbers is optional.
+%    - Pages with figures or illustrations may be numbered in sequence or left
+%      unnumbered. The chosen procedure must be used consistently throughout the
+%      thesis.
+%    - Pagination must be carefully checked for correct sequence and
+%      completeness.
+% - Footnotes, references and appendices
+%    - These should conform to a scholarly style appropriate to the discipline.
+%    - Footnotes may be placed at the bottom of the page or as endnotes at the
+%      end of each chapter.
+%    - Consistency of formatting for footnotes and references is required
+%      throughout the thesis.
+% - Figures, illustrations, photographs and digital images
+%    - Figures, tables, graphs, etc., should be positioned according to the
+%      publication conventions of the discipline.
+%    - Charts, graphs, maps, and tables that are larger than the standard page
+%      should be avoided unless absolutely necessary.
+%     - Overlays must be meticulously positioned in the text.
+%     - Where graphs, illustrations, photographs, etc. fill an entire page,
+%       these pages can be numbered in sequence or left unnumbered (see
+%       Pagination above).
+%     - Legends or captions accompanying such full-page graphics must be
+%       presented on a separate page.
+% - Additional materials Slides, tapes, etc. are to be avoided if possible and
+%     can be included only if the student authorizes the reproduction of the
+%     thesis without them.
+%
+%   Following formatting guidelines from the article 
+%               "Writing a thesis with LaTeX" by Mori
+%           and the repository 
+%               https://github.com/dspinellis/latex-advice
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass[reqno,12pt,oneside]{report} % right-side a equation numbering, 12 point font, print one-sided 
-%\documentclass[reqno,12pt,twoside,openright]{report} % right-side equation numbering, 12 point font, print two-sided, Chapters start on odd pages. Rackham only accepts one-sided, so this is for personal printings.
+% right-side a equation numbering, 12 point font, print one-sided
+\documentclass[reqno, 12pt, onesidie]{report}
 % \usepackage{tocloft}
 \usepackage{stylesheets/thesis_style}
-% \usepackage{stylesheets/rac}         % Use Rackham thesis style file
-% \usepackage{stylesheets/aas_macros}  % To allow the reading of ADS journal references in the bibliography
 \addbibresource{refs}
 
-\newcommand{\myTitle}{
-  Practical Considerations and Extensions of the Invariant Extended Kalman Filtering Framework
-  }
-
-\title{HIII}
+% Custom definitions
+\title      {Title Here}
+\author     {Author Name}
+\supervisor {Professor James Richard Forbes}
+\degree     {Master of Engineering}
+\department {Department of Mechanical Engineering}
+\school     {McGill University}
+\address    {McGill University, Montreal}
+\email      {first.last@mail.mcgill.ca}
+\month      {December}
+\year       {2019}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
-\selectlanguage{english} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Top matter
+
+\selectlanguage{english}
 % \bibliographystyle{agu04}    % Set the bibliography style. agu04, plain, alpha, etc.
 
 % Title page as required by Rackham dissertation guidelines
-\titlepage{\myTitle}{Jonathan Arsenault}{Department of Mechanical Engineering}{Master of Engineering}
-{Professor James Richard Forbes}
+% Requires the definition of
+%   \title
+%   \author
+%   \supervisor
+%   \degree
+%   \department
+%   \school
+%   \address
+%   \month
+%   \year
+\titlepage
 
 % Begin the front matter as required by Rackham dissertation guidelines
 \initializefrontsections
 
-% Optional Frontispiece
-% \frontispiece{
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=\textwidth]{figs/attributesScience.jpg} 
-% \end{figure}
-% \hfill \emph{The Attributes of Science} -- Jean-Baptiste-Sim\'{e}on Chardin, 1731}
-
-% \frontispiece{
-% \begin{figure}[h]
-%     \centering
-%     \includegraphics[width=\textwidth]{figs/formationSnowbirds.jpg} 
-% \end{figure}
-% \hfill Snowbirds in formation flight -- a challenging guidance and control problem~\cite{SnowBirdFormation}.}
-
-
-
-% \includegraphics[width=6in]{figs/attributesScience.jpg} 
-%     \emph{The Attributes of Science} -- Jean-Baptiste-Sim\'{e}on Chardin, 1731}
-
 % Optional, but recommended, Copyright page
 
 \cleardoublepage
-\copyrightpage{Jonathan Arsenault}
+% Copyright page. Requires the definition of
+%   \author
+%   \email
+%   \year
+\copyrightpage
 
 % \copyrightpageTwo
+% // Top matter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Page numbering. If you don't include a frontispiece or copyright page, you'll need to change this for two-sided printing.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Front matter
+
+% Page numbering. If you don't include a frontispiece or copyright page, you'll
+% need to change this for two-sided printing.
 \makeatletter
 \if@twoside \setcounter{page}{4} \else \setcounter{page}{2} \fi
 \makeatother
- 
+
 % Optional Dedication page
-%\dedicationpage{To my family for their steadfast support and love.}
+\dedicationpage{\emph{To my family for their steadfast support and love.}}
 
 \startabstractpage
-{\myTitle}{Jonathan Arsenault}{Supervisor: James Richard Forbes}
 \input{abstract}
-\label{AbstractEn}
+\label{Abstract}
 
 % Optional Acknowledgements page
  \startacknowledgementspage
@@ -81,24 +125,30 @@
 \pdfbookmark{\contentsname}{toc}
 \tableofcontents     % Required
 \cleardoublepage
+
 % \phantomsection
-% \addcontentsline{toc}{chapter}{List of Figures}
-\listoffigures       % Required if there is more than one figure
+% Required if there is more than one figure
+\listoffigures
 \cleardoublepage
 % \phantomsection
-\listoftables        % Required if there is more than one table
+% Required if there is more than one table
+\listoftables
 % \addcontentsline{toc}{chapter}{List of Tables}
 
-%\listofmaps          % Required if there is more than one map
+% Required if there is more than one map
+%\listofmaps
 \cleardoublepage
 
-%\listofappendices    % Required if there is more than one appendix
+% Required if there is more than one appendix
+%\listofappendices
 \cleardoublepage
 
-% \listofabbreviations % Optional. Abbreviations should be stored in a file named abbr.tex
-% \cleardoublepage
+% Optional. Abbreviations should be stored in a file named abbreviations.tex
+\listofabbreviations
+\cleardoublepage
 
-% \listofsymbols       % Optional. Abbreviations should be stored in a file named abbr.tex
+% Optional. Abbreviations should be stored in a file named symbols.tex
+\listofsymbols
 
 \cleardoublepage
 % Optional in-dissertation Abstract Page
@@ -108,116 +158,73 @@
 \setcounter{page}{1}
 \renewcommand{\thepage}{\arabic{page}}
 
-% \addtocontents{toc}{\protect\mbox{ }\protect\newline\noindent{\large\bf Part}\protect\newline}
+% // Front matter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \cleardoublepage
-%\part{Introduction}
-
-
-\startthechapters 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Main matter
+\startthechapters
 % The individual files for each of the chapters are put here.
-% Save each chapter of your thesis to a seperate tex file
+% Save each chapter of your thesis to a separate tex file
 % and then use the \input command to include this file in your
-% thesis.  For instance you can save a file to "intro.tex" and 
-% then type \input{intro}. 
+% thesis.  For instance you can save a file to "intro.tex" and
+% then type \input{intro}.
 
-% Change header line to Michigan blue
-% \definecolor{mblue}{HTML}{00274C}
-% \renewcommand{\headrulewidth}{0.5pt}
-% \renewcommand{\headrule}{\hbox to\headwidth{\color{mblue}\leaders\hrule height \headrulewidth\hfill}}
-% \renewcommand{\footrulewidth}{0.5pt}
-% \renewcommand{\footrule}{\hbox to\headwidth{\color{red}\leaders\hrule height \footrulewidth\hfill}}
-% \renewcommand{\chaptermark}[1]{ \markboth{#1}{} }
-% \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{\chaptername\ \thechapter.\ #1}}{}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Chapters
 
-
-% Nice headers
-% \pagestyle{mine}
-
-
-% ------------------------------------------------------------
-  % \part{Introduction}
+% \part{Introduction}
 
 \cleardoublepage
     \chapter{Introduction}
     \label{chap:Intro}
     \input{sections/intro}
-    
-% \cleardoublepage
-%     \chapter{Preliminaries}
-%     \label{chap:preliminaries}
-%     \input{sections/preliminaries}
 
-% % ------------------------------------------------------------
+\cleardoublepage
+    \chapter{Preliminaries}
+    \label{chap:preliminaries}
+    \input{sections/preliminaries}
 
-% \cleardoublepage
-%     \chapter{Invariant Extended Kalman Filtering}
-%     \label{chap:IEKF}
-%     \input{sections/IEKF}
-    
-% \cleardoublepage
-%     \chapter{Practical Implications of the IEKF}
-%     \label{chap:SE3}
-%     \input{sections/sample_problems_se3}
-    
-% \cleardoublepage
-%     \chapter{Invariant Batch SLAM}
-%     \label{chap:batch}
-%     \input{sections/batch}
-    
-%  ------------------------------------------------------------    
+% ------------------------------------------------------------
+
+\cleardoublepage
+    \chapter{Invariant Extended Kalman Filtering}
+    \label{chap:IEKF}
+    \input{sections/IEKF}
+
+\cleardoublepage
+    \chapter{Practical Implications of the IEKF}
+    \label{chap:SE3}
+    \input{sections/sample_problems_se3}
+
+\cleardoublepage
+    \chapter{Invariant Batch SLAM}
+    \label{chap:batch}
+    \input{sections/batch}
+
+%  ------------------------------------------------------------
 \cleardoublepage
   \chapter{Closing Remarks and Future Work}
   \label{chap:conc}
   \input{sections/conclusion}
 %  ------------------------------------------------------------
-% \startcontents
-% \phantomsection
-% \addcontentsline{toc}{part}{}%
-% \addtocontents{toc}{\protect\addvspace{2.25em plus 1pt}}
+
+%   // Chapters
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% \bookmarksetupnext{level=-1}
-% \startappendices
+% // Main matter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    %\addtocontents{toc}{\protect\setcounter{tocdepth}{1}}
-
-    % \bookmarksetupnext{rellevel=1}
-    % \appendix{Resulting Publications}
-    % \label{app:publications}
-    % % \pagestyle{appendix}
-    % \input{Appendices/listOfPapers}
-
-    % \pagestyle{mine}
-
-    %bookmarksetup{level=0}
-    % \appendix{Miscellaneous Polytopic Conic Controller Design}
-    %\cleardoublepage
-    %\appendix{Polytopic Conic Design with $\mbf{C}_{\textrm{c}}$ Matrix}
-    %\hypersetup{bookmarksdepth=-2}
-    % \addcontentsline{loa}{appendix}{\protect\numberline{\theappendix.}{\ignorespaces\rm #1}}
-    % \bookmarksetupnext{level=2}
-    %\label{app:conicSynthesis}
-    %\input{Appendices/conicSynthesis}
-    %\hypersetup{bookmarksdepth}
-%
-%    \bookmarksetup{level=1}
-%    \cleardoublepage
-%    \appendix{Miscellaneous Derivations}
-%    \hypersetup{bookmarksdepth=-2}
-%    \bookmarksetup{level=2}
-%    \label{app:derivations}
-%    % \input{Appendices/derivations} 
-%    \hypersetup{bookmarksdepth}
-% 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% End matter
 \bookmarksetupnext{startatroot}
 
 \cleardoublepage
-%\startbibliography
+% \startbibliography
 
 % \pagestyle{bib}
-
 
  \begin{singlespace} % Bibliography must be single spaced
 	% \bibliographystyle{ieeetr}
@@ -225,11 +232,13 @@
    \printbibliography
  \end{singlespace}
 
-% An external Abstract that can be printed at the end of the document, 
-% for separate submission to Rackham. Comment it out when not needed. - jg
-% \startextabstractpage
-% {The Title of Your Dissertation}{Your Name}{Chair: Albert Einstein}
-% \input{Abstract/Abstract}
-% \label{ExtAbstract}
+  % An external Abstract that can be printed at the end of the document,
+  % for separate submission to Rackham. Comment it out when not needed. - jg
+  % \startextabstractpage
+  % {The Title of Your Dissertation}{Your Name}{Chair: Albert Einstein}
+  % \input{Abstract/Abstract}
+  % \label{ExtAbstract}
 
+ % // End matter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

@@ -19,6 +19,37 @@
 %          two-side printing, added in-dissertation abstract and abstract
 %          that prints separately at the end.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Amro: Custom definitions ----------->
+%   Supervisor name
+\def\@supervisor#1{#1}
+\def\supervisor#1{\gdef\@supervisor{#1}}
+%   Department (e.g., Mechanical Engineering)
+\def\@department#1{#1}
+\def\department#1{\gdef\@department{#1}}
+%   School address (e.g., McGill University, Montreal)
+\def\@address#1{#1}
+\def\address#1{\gdef\@address{#1}}
+%   School name (e.g., McGill University)
+\def\@school#1{#1}
+\def\school#1{\gdef\@school{#1}}
+%   Degree title (e.g., Department of Master of Engineering)
+\def\@degree#1{#1}
+\def\degree#1{\gdef\@degree{#1}}
+%   Email (e.g., first.last@mcgill.ca)
+\def\@email#1{#1}
+\def\email#1{\gdef\@email{#1}}
+%   Month
+\def\@month#1{#1}
+\def\month#1{\gdef\@month{#1}}
+%  Year. WARNING: this definition conflicts with pgfplots package.
+\def\@year#1{#1}
+\def\year#1{\gdef \@year{#1}}
+%   Define date format
+\def\@date{\@month, \@year}
+% <----------- Amro: Custom definitions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \typeout{  }
 \typeout{Substyle `rac' for Rackham dissertation.}
 \typeout{  }
@@ -63,33 +94,34 @@
 \def\ttlpg{\@restonecolfalse \if@twocolumn \@restonecoltrue \onecolumn
  \else \newpage \fi \thispagestyle{empty} \c@page \z@}
 
-\def\titlepage#1#2#3#4#5{
+\def\titlepage{
  \ttlpg
  \begin{singlespace}
- \hbox{ }
- \twohalfinmar
- \begin{center}
- \begin{onehalfspacing} % For the `Large' font size, this will look single spaced. -jg
-  % {\Large\bf #1 \mbox{}} \\
-  {\Large\bf \@title \mbox{}} \\
- \end{onehalfspacing}
+  \hbox{ }
+  \twohalfinmar
+  \begin{center}
+    \begin{onehalfspacing} 
+      % For the `Large' font size, this will look single spaced. -jg
+      {\Large\bf \@title \mbox{}} \\
+    \end{onehalfspacing}
+    \vfill
+    by \\
+     % ex is the height of the lowercase 'x' for the current font. -jg
+    \vspace{2ex}
+    \@author \\
+    \vfill
+      \@department \\
+      \@address \\
+      \@date
+      \vfill
+      A thesis submitted to \@school \\
+      in partial fulfillment of the requirements of the degree of \\
+      \@degree \\
+  \end{center}
   \vfill
-  by \\
-  \vspace{2ex} % ex is the height of the lowercase 'x' for the current font. -jg
-  #2 \\
-  \vfill
-  #3 \\
-  McGill University, Montreal \\
-  December 2019 \\
-  \vfill
-   A thesis submitted to McGill University \\
-   in partial fulfillment of the requirements of the degree of \\
-   #4 \\
- \end{center}
- \vfill
   Supervisor: \\[2ex]
   \mbox{ }\hspace{0.6in}
-  \parbox{5.3in}{#5}
+  \parbox{5.3in}{\@supervisor}
  \end{singlespace}
 }
 
@@ -106,17 +138,17 @@
  \twoinmar
 }
 
-\def\copyrightpage#1{
+\def\copyrightpage{
  \ttlpg
  \hbox{ }
  \vertadjust
  \vfill
  \begin{center}
   % \begin{singlespace}
-    Jonathan Arsenault \\
-    jonathan.arsenault@mail.mcgill.ca \\
+    \@author \\
+    \@email \\
     ~\\
-   \underline{\copyright\hspace{0.2in}{#1}\hspace{0.2in}2019}\\
+   \underline{\copyright\hspace{0.2in}{\@author}\hspace{0.2in}\@year}\\
    \vspace{0.1in}All Rights Reserved
   % \end{singlespace}
  \end{center}
@@ -135,18 +167,18 @@
 %   \rm
 % }
 
-%\def\dedicationpage#1{
-% \cleardoublepage
-% \phantomsection
-% \addcontentsline{toc}{chapter}{Dedication}
-% \hbox{ }
-% \vertadjust
-% \vfill
-% \begin{center}
-%  #1
-% \end{center}
-% \vfill
-%}
+\def\dedicationpage#1{
+\cleardoublepage
+\phantomsection
+\addcontentsline{toc}{chapter}{Dedication}
+\hbox{ }
+\vertadjust
+\vfill
+\begin{center}
+ #1
+\end{center}
+\vfill
+}
 
 \def\startacknowledgementspage{
  \cleardoublepage
@@ -167,8 +199,6 @@
  \centerline{\large\bf Preface}
  \vspace{0.7in}
 }
-
-
 
 %-- Table of contents and lists --
 
@@ -287,7 +317,7 @@
  \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
  \hbox{ }
  \twoinmar
- \input{abbr}
+ \input{abbreviations}
 }
 
 \def\listofsymbols{% Uses the acronym package -jg
@@ -297,11 +327,12 @@
  \@restonecolfalse\if@twocolumn\@restonecoltrue\onecolumn\fi
  \hbox{ }
  \twoinmar
- \input{symbol}
+ \input{symbols}
 }
 
 
-\def\startabstractpage#1#2#3{% This formats the optional in-dissertation abstract - jg
+% \def\startabstractpage#1#2#3{% This formats the optional in-dissertation abstract - jg
+\def\startabstractpage{% This formats the optional in-dissertation abstract - jg
  \newpage
  \phantomsection
  \addcontentsline{toc}{chapter}{Abstract}
