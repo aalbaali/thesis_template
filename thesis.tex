@@ -226,7 +226,7 @@
 %-------------------------------------------------------------------------------
 \cleardoublepage
   \chapter{Closing Remarks and Future Work}
-  \label{chap:conc}
+  \label{chap:conclusion}
   \input{chapters/conclusion}
 %   // Chapters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -247,6 +247,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   Bibliography
 % Bibliography must be single spaced
+% Make sure the bibliography entries are consistent and clean. JabRef is an
+% excellent reference manager.
 \begin{singlespace}
   \printbibliography
 \end{singlespace}
@@ -260,6 +262,10 @@
 \crefalias{section}{appendix}
 
 %-------------------------------------------------------------------------------
+% Add the appendices chapters if needed.
+% To stay consistent, put them in an external file (e.g., called appendices.tex) 
+% and use \input{chapters/appendices.tex} to include them in the text.
+
 \chapter{Appendix 1}
 \label{app:label}
 \section{Section 1}

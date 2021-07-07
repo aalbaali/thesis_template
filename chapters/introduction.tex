@@ -1,32 +1,41 @@
-The onboard computers of autonomous robots, such as unmanned aerial vehicles (UAV), mobile robots, or autonomous underwater vehicles (AUV), run navigation, guidance, and control  algorithms that enable the robotic system to perform desired tasks. The navigation algorithm is responsible for estimating the states of the robot. The guidance algorithm considers planning the path the robot will take to complete its task.  Lastly, the controller computes control inputs, such as forces and torques, to be applied so that the robot follows the desired trajectory. These three modules are of equal importance, and are intrinsically linked. 
+High-level introduction to the field of research.
 
-This thesis is focused on the navigation problem, also commonly called the state estimation problem. State estimation is the process of estimating the states of a system given noisy and biased sensor data. For example, an UAV must typically maintain a robust and accurate estimate of its position, velocity, and attitude in order to perform precision tasks, such as parcel delivery or surveillance. However, the sensors onboard UAVs are often of lower quality, to minimize the cost of the system, necessitating a state estimation algorithm that can reliably estimate the  position, velocity, and attitude of the UAV given low-qulity senor data.
-
-Several different state estimation techniques exist, each with their advantages and disadvantages. Roughly speaking, they can be separated into batch algorithms, which typically run offline, and sequential algorithms, which typically run in real time. Batch algorithms use sensor data over the entire trajectory to in turn provide an estimate of the states over the entire trajectory. Traditional batch algorithms include the (nonlinear) least-squares formulation \cite[Sec. 4.3]{Barfoot2017} and the forward-backward smoother \cite[Sec. 3.2.2]{Barfoot2017} and Rauch-Tung-Striebel smoother \cite[Sec. 3.2.3]{Barfoot2017}.  Batch algorithms are especially useful when reconstructing scenes for metrology or photogrammetry applications, for example. In addition, simultaneous localization and mapping (SLAM) algorithms are often batch algorithms that do not run in real time. 
-
-In real-time applications, sequential state estimation methods are often preferred.  The most commonly used algorithms for real-time state estimation are approximations of the Bayes filter \cite{Sarkka2010}, such as the Kalman filter, extended Kalman filter (EKF), or sigma-point Kalman filter. Other real-time state estimation methods that leverage concepts from the batch formulation, such as using a bundle of sensor data or iteration, include the sliding window filter \cite{Sibley2006}, iterative extended Kalman filter \cite[Sec. 4.2.5]{Barfoot2017}, and iterative sigma-point Kalman filter \cite[Sec. 4.2.10]{Barfoot2017}.
-
-In industry, the EKF is often the algorithm of choice, due to its relative simplicity and its track record of effectiveness. However, it does have its deficiencies. In this thesis, a variant of the EKF, the invariant extended Kalman filter (IEKF) is considered. For a review of the IEKF, see Chapter~\ref{chap:IEKF}. The main idea behind the invariant filtering framework is that certain problems (i.e., so-called ``left-invariant'' problems) do not explicitly depend on a particular inertial frame, and others (i.e., so-called ``right-invariant'' problems) do not explicitly depend on a particular body-fixed frame. Not all estimation problems fit the invariant filtering framework, but when an estimation problem does, extremely appealing properties appear. 
-
+%-------------------------------------------------------------------------------
 \section{Thesis Objective}
 
-The objective of this thesis is to determine how the invariant filtering framework can be used to improve existing state estimation methods. In particular, the contribution of this thesis is an overview of practical considerations of the IEKF and an extension of the invariant estimation theory to the SLAM problem posed in a batch framework.
-
-Another contribution of this thesis is to thoroughly summarize the theory behind the IEKF. This includes some proofs that are missing from the literature. A major contribution of this thesis is to compare the various error definitions that can be used in solving the SLAM problem. This includes a general formulation for performing SLAM when the state can be formulated as an element of a matrix Lie group. Modifying the error definitions leads to Jacobians that may depend less, or not at all, on the state estimate. 
-Lastly, this thesis provides a thorough analysis of the practical implications of the IEKF. The theory behind the IEKF is sound, but the assumptions made often do not hold in practice. Of note, a novel method of using the IEKF in conjunction with a stereo camera is presented.
-
+%-------------------------------------------------------------------------------
 \section{Thesis Overview}
 
 This thesis is structured as follows.
 
-Chapter~\ref{chap:preliminaries} summarizes mathematical concepts and notation that are used throughout this thesis. 
+\Cref{chap:preliminaries} summarizes mathematical concepts and notation that are used throughout this thesis. 
 
-Chapter~\ref{chap:IEKF} outlines the IEKF. The relevant theorems and proofs are presented in continuous and discrete-time. The left-invariant extended Kalman filter and right-invariant extended Kalman filter are then detailed.
+\verb+\Cref{chap:iekf}>+ outlines the IEKF. The relevant theorems and proofs are presented in continuous and discrete-time. The left-invariant extended Kalman filter and right-invariant extended Kalman filter are then detailed.
 
-In Chapter~\ref{chap:SE3}, several examples of the IEKF are presented to illustrate how to practically implement an IEKF and to compare its performance to that of a standard multiplicative extended Kalman filter (MEKF). 
+In \verb+\cref{chap:SE3}>+, several examples of the IEKF are presented to illustrate how to practically implement an IEKF and to compare its performance to that of a standard multiplicative extended Kalman filter (MEKF). 
 
-In Chapter~\ref{chap:batch}, a solution to the SLAM problem in the invariant framework is presented. Simulation results are shown comparing the novel formulation to more traditional batch-based solutions to the SLAM problem.
+In \verb+\cref{chap:batch}>+, a solution to the SLAM problem in the invariant framework is presented. Simulation results are shown comparing the novel formulation to more traditional batch-based solutions to the SLAM problem.
 
-This thesis is concluded in Chapter~\ref{chap:conc}, where a summary of the findings are presented, along with recommended future work.
+This thesis is concluded in \cref{chap:conclusion}, where a summary of the findings are presented, along with recommended future work.
 
 
+% Remove this section when writing the thesis
+\section{TEMPLATE: Using \texttt{cleveref} and \texttt{acronym}}
+A system of equations is given by
+\begin{align}
+  \label{eq:Ax=b}
+  \mbf{A} \mbf{x} 
+    &= 
+    \mbf{b}.
+\end{align}
+Use \verb+\cref+ to reference a label (equation, figure, table, chapter, \etc) in the middle of a sentence, and use \verb+\Cref+ to reference a label at the beginning of the sentence.
+
+For example, \cref{eq:Ax=b} is an important equation.
+\Cref{eq:Ax=b} is used extensively in estimation theory (note how `Equation' is automatically added when using \verb+\Cref+).
+
+The \texttt{acronym} package handles acronyms well using \verb+\Ac+ (at the beginning of the sentence) and \verb+\ac+ (otherwise).
+The package will take care of expanding the acronym when it's first used, and then uses the abbreviation/short-name afterwards.
+
+For example, \ac{SLAM} is an interesting field of research.
+Probability is extensively used in \ac{SLAM}.
+The upper-case/lower-case rules of the long names (defined in \texttt{abbreviations.tex}) should be consistent for all acronyms.

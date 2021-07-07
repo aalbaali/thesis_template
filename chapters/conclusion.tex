@@ -1,17 +1,13 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Conclusions
 \section{Conclusions}
 
-In this thesis, an in-depth analysis of state estimation in an invariant framework is presented. Through rigorous testing, the advantages and limitations of these different techniques are determined. Furthermore, an extension of invariant filtering theory to the problem of a batch solution to the SLAM problem is presented.  
+% // Conclusions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The IEKF is superior to the traditional MEKF in certain situations. It is better suited to problems where the state can be defined on matrix Lie groups, which is the case for many robotics problems. Throughout the simulations presented herein, the performance of the IEKF is on average better than that of the MEKF. However, only particular sample problems are used to illustrate this. It would therefore be irresponsible to state that the IEKF would always perform better than the MEKF. However, certain clear conclusions can be drawn.
-
-First, state-independent Jacobians, such as those obtained in an IEKF, are advantageous in cases where the best estimate of the state is far from the true value. In most situations, this is seen when the initialization is poor. The IEKF's better performance is therefore mostly attributed to better performance in the transient period before the filter reaches steady state. Thus, the IEKF should be the state estimator of choice in applications where the initial state is unknown, and no other initialization scheme is available. 
-
-Second, leveraging the invariant framework in batch estimation only has limited advantages. In standard batch estimation, the Jacobians may initially be inaccurate if they depend on the state. However, as the solution converges, the Jacobians will be closer to the true Jacobians, as the error in the state estimate decreases. At this stage, there is minimal difference between a state-independent Jacobian and a Jacobian computed using an accurate state estimate. 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Future Work
 \section{Future Work}
 
-In Chapter~\ref{chap:SE3}, the IEKF is compared to the MEKF. The MEKF was used a baseline as it is commonly used. However, comparing the IEKF to an iterative version of the MEKF may yield different results. The iterative MEKF improves upon the MEKF by recomputing the Jacobians at each time step until convergence. Furthermore, an iterative version of the IEKF could also be developed. This iterative IEKF would only be useful in scenarios where the process model is not group affine, or the measurement model is not invariant, leading to state dependent Jacobians like the MEKF. 
-
-Another avenue to explore would involve using a realistic sensor model in invariant batch SLAM. A future study using a stereo camera model or LIDAR model would also allow the invariant batch SLAM algorithms to be tested on experimental data.
-
-Lastly, a study analyzing the consistency of the IEKF versus other other filtering techniques should be conducted. The IEKF should theoretically be more consistent, as its more accurate Jacobians mean the covariance better captures the underlying distribution. In a similar vein, the impact of unknown disturbances should be studied. The IEKF may be better suited to handle these, once again, due to theoretically exact Jacobians.
+% // Future Work
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
