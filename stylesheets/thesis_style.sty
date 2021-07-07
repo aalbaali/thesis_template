@@ -34,6 +34,13 @@
 
 \usepackage{stylesheets/decar_classes/decar-post}
 
+% Suppress `bookmark' package warning
+%   https://tex.stackexchange.com/questions/123575/how-to-suppress-the-author-bookmark-generated-by-svmult-with-bookmark-package-wi
+\makeatletter
+\providecommand*{\toclevel@chap}{0} 
+\edef\toclevel@authorch{\the\numexpr\toclevel@chap+1} 
+
+
 % Other commands/packages -------------->
 % Use Rackham thesis style file
 \usepackage{stylesheets/rac}
@@ -41,7 +48,7 @@
 \usepackage{stylesheets/aas_macros}
 
 % Use in French abstract
-\usepackage[french,english]{babel}
+\RequirePackage[french,english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{esint}
@@ -66,6 +73,9 @@
 \usepackage{enumitem}
 % <-------------- Dynamics commands/packages
 
+% Use csquotes when using babel with biblatex
+%   https://tex.stackexchange.com/questions/229638/package-biblatex-warning-babel-polyglossia-detected-but-csquotes-missing
+\usepackage{csquotes}
 % // Packages
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
