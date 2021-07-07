@@ -112,19 +112,34 @@
 % Optional Dedication page
 \dedicationpage{\emph{To my family for their steadfast support and love.}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Abstracts
 \startabstractpage
 \input{front_matter/abstract}
 \label{Abstract}
+%   // Abstracts
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Acknowledgements
 % Optional Acknowledgements page
  \startacknowledgementspage
 \input{front_matter/acknowledgements}
 \label{acknowledgements}
+%   // Acknowledgements
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Preface
+%    Contribution to original knowledge. A doctoral thesis must clearly state
+%    the elements of the thesis that are considered original scholarship and
+%    distinct contributions to knowledge.
 % Optional Preface page
 \startprefacepage
 \input{front_matter/preface}
 \label{preface}
+%   // Preface
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Table of contents, list of figures, etc.
 \cleardoublepage
@@ -168,6 +183,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \cleardoublepage
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Main matter
 \startthechapters
@@ -182,29 +198,32 @@
 
 % \part{Introduction}
 
+%-------------------------------------------------------------------------------
 \cleardoublepage
-    \chapter{Introduction}
-    \label{chap:Introduction}
-    \input{chapters/introduction}
+\chapter{Introduction}
+\label{chap:Introduction}
+\input{chapters/introduction}
 
+%-------------------------------------------------------------------------------
 \cleardoublepage
     \chapter{Preliminaries}
     \label{chap:preliminaries}
     \input{chapters/preliminaries}
 
-% ------------------------------------------------------------
+%-------------------------------------------------------------------------------
 % Main chapters
 % \cleardoublepage
 %     \chapter{Some chapter 1}
 %     \label{chap:some chapter 1}
 %     \input{chapters/some_chapter_1}
 %
+%-------------------------------------------------------------------------------
 % \cleardoublepage
 %     \chapter{Some chapter 2}
 %     \label{chap:some chapter 2}
 %     \input{chapters/some_chapter_2}
 
-%  ------------------------------------------------------------
+%-------------------------------------------------------------------------------
 \cleardoublepage
   \chapter{Closing Remarks and Future Work}
   \label{chap:conc}
@@ -225,10 +244,35 @@
 
 % \pagestyle{bib}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Bibliography
 % Bibliography must be single spaced
- \begin{singlespace}
-   \printbibliography
- \end{singlespace}
+\begin{singlespace}
+  \printbibliography
+\end{singlespace}
+%   // Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%   Appendices
+\startappendices
+% Change the chapter and section aliases for cleveref (i.e., when using \cref).
+\crefalias{chapter}{appendix}
+\crefalias{section}{appendix}
+
+%-------------------------------------------------------------------------------
+\chapter{Appendix 1}
+\label{app:label}
+\section{Section 1}
+\label{sec:label}
+\section{Section 2}
+
+%-------------------------------------------------------------------------------
+\chapter{Appendix 2}
+\section{Section 1}
+\section{Section 2}
+
+%   // Appendices
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
  % // End matter
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
